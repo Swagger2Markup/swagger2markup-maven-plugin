@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+          http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.redowlanalytics</groupId>
+    <artifactId>swagger2markup-maven-plugin</artifactId>
+    <version>0.6.3</version>
+    <packaging>maven-plugin</packaging>
+
+    <name>Swagger2Markup Maven Plugin</name>
+    <description>Swagger2Markup Maven Plugin</description>
+    <url>https://github.com/redowl/swagger2markup-maven-plugin</url>
+
+    <developers>
+        <developer>
+            <id>redowl</id>
+            <name>RedOwl Analytics</name>
+            <email>eng@redowlanalytics.com</email>
+            <url>http://www.redowlanalytics.com</url>
+            <roles>
+                <role>Project Lead</role>
+            </roles>
+            <timezone>UTC-5</timezone>
+        </developer>
+        <developer>
+            <id>rusnyder</id>
+            <name>Russell Snyder</name>
+            <email>ru.snyder@gmail.com</email>
+            <url>http://github.com/rusnyder</url>
+            <roles>
+                <role>Contributor</role>
+            </roles>
+            <timezone>UTC-5</timezone>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
+
+    <issueManagement>
+        <url>https://github.com/redowl/swagger2markup-maven-plugin/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+
+    <properties>
+        <guava.version>18.0</guava.version>
+        <maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
+        <maven.invoker.plugin.version>1.8</maven.invoker.plugin.version>
+        <maven.plugin.annotations.version>3.4</maven.plugin.annotations.version>
+        <maven.plugin.api.version>3.3.3</maven.plugin.api.version>
+        <maven.project.version>2.2.1</maven.project.version>
+        <project.java.version>1.6</project.java.version>
+
+        <!-- Keep the plugin version in sync w/ the swagger2markup version -->
+        <swagger2markup.version>${project.version}</swagger2markup.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.robwin</groupId>
+            <artifactId>swagger2markup</artifactId>
+            <version>${swagger2markup.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>${maven.plugin.api.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>${maven.plugin.annotations.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven.compiler.plugin.version}</version>
+                <configuration>
+                    <source>${project.java.version}</source>
+                    <target>${project.java.version}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>run-its</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-invoker-plugin</artifactId>
+                        <version>${maven.invoker.plugin.version}</version>
+                        <configuration>
+                            <debug>true</debug>
+                            <projectsDirectory>src/it</projectsDirectory>
+                            <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
+                            <pomIncludes>
+                                <pomInclude>*/pom.xml</pomInclude>
+                            </pomIncludes>
+                            <preBuildHookScript>setup</preBuildHookScript>
+                            <postBuildHookScript>validate</postBuildHookScript>
+                            <goals>
+                                <goal>clean</goal>
+                                <goal>process-sources</goal>
+                            </goals>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
+                                    <goal>install</goal>
+                                    <goal>run</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <!-- Import Guava for Beanshell validation scripts -->
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.google.guava</groupId>
+                                <artifactId>guava</artifactId>
+                                <version>${guava.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

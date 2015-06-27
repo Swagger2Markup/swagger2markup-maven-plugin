@@ -1,0 +1,39 @@
+## JetBrains (IntelliJ/IDEA) ignores
+*.iml
+*.ipr
+*.iws
+.idea/
+.gradle/
+
+## Eclipse ignores
+/.settings
+.project
+.classpath
+eclipse-build
+*/.project
+*/.classpath
+*/eclipse-build
+
+## Netbeans ignores
+nb-configuration.xml
+nbactions.xml
+
+## Java ignores
+*.class
+target/
+generated/
+build/
+*.jar
+*.war
+*.ear
+dependency-reduced-pom.xml
+
+## Miscellaneous ignores
+*~
+*.tmp
+*.tar.gz
+*.tar
+*.tgz
+*.zip
+*.rar
+

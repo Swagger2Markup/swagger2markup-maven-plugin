@@ -1,0 +1,29 @@
+import java.io.*;
+import com.google.common.collect.*;
+
+File outputDir = new File( basedir, "target/docs" );
+
+String[] expectedFiles = {
+	"definitions.md",
+	"overview.md",
+	"paths.md",
+	"pet.md"
+};
+
+Set existingFiles = Sets.newHashSet( outputDir.list() );
+
+for ( String expectedFile : expectedFiles )
+{
+    System.out.println( "Checking for existence of " + expectedFile );
+    if ( !existingFiles.remove( expectedFile ) )
+    {
+        throw new Exception( "Missing file: " + expectedFile );
+    }
+}
+
+if ( !existingFiles.isEmpty() )
+{
+    throw new Exception( "Found unexpected files: " + existingFiles );
+}
+
+return true;
