@@ -99,6 +99,18 @@
                     <target>${project.java.version}</target>
                 </configuration>
             </plugin>
+
+            <!-- Pull in coverage/reporting plugins for TravisCI -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.7.2.201409121644</version>
+            </plugin>
+            <plugin>
+                <groupId>org.eluder.coveralls</groupId>
+                <artifactId>coveralls-maven-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
         </plugins>
     </build>
 
