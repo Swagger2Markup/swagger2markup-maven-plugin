@@ -1,0 +1,275 @@
+= Swagger2Markup Maven Plugin
+:author: RedOwl Analytics
+:version: 0.6.3
+:hardbreaks:
+
+image:https://travis-ci.org/redowl/swagger2markup-maven-plugin.svg["Build Status", link="https://travis-ci.org/redowl/swagger2markup-maven-plugin"] image:https://coveralls.io/repos/redowl/swagger2markup-maven-plugin/badge.svg["Coverage Status", link="https://coveralls.io/r/redowl/swagger2markup-maven-plugin"] image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"] image:https://img.shields.io/badge/Twitter-redowlytics-blue.svg["Twitter", link="https://twitter.com/redowlytics"]
+
+== Overview
+
+The primary goal of https://github.com/RobWin/swagger2markup[Swagger2Markup] is to *simplify the generation of an up-to-date RESTful API documentation by combining documentation that's been hand-written with auto-generated API documentation* produced by https://github.com/swagger-api[Swagger]. The result is intended to be an *up-to-date, easy-to-read, on- and offline user guide*, comparable to https://developer.github.com/v3/[GitHub's API documentation]. The output of the plugin can be used as an alternative to https://github.com/swagger-api/swagger-ui[swagger-ui] and can be served as static content.
+
+The Swagger2Markup Maven Plugin simplifies the usage of https://github.com/RobWin/swagger2markup[Swagger2Markup]. The Plugin adds a Maven goal which converts a Swagger JSON or YAML file into several *AsciiDoc* or *GitHub Flavored Markdown* documents. The plugin supports the Swagger 1.2 and 2.0 specification. Internally the plugin uses https://github.com/RobWin/swagger2markup[Swagger2Markup] which in turn uses the _official_ https://github.com/swagger-api/swagger-parser[swagger-parser] and RobWin's https://github.com/RobWin/markup-document-builder[markup-document-builder].
+
+You can use the plugin to convert your contract-first Swagger YAML file into a human-readable format and combine it with hand-written documentation. As an alternative, you can choose the code-first approach and use Swagger2Markup together with https://github.com/swagger-api/swagger-core/tree/master/samples/java-jersey2[Swagger JAX-RS], https://github.com/springfox/springfox[springfox] or https://github.com/spring-projects/spring-restdocs[spring-restdocs]. See https://github.com/RobWin/swagger2markup#using-swagger2markup[Swagger2Markup user guide] for more details.
+
+http://asciidoctor.org/docs/asciidoc-writers-guide/[AsciiDoc] is preferable to Markdown as it has more features. AsciiDoc is a text document format for writing documentation, articles, books, ebooks, slideshows, web pages and blogs. AsciiDoc files can be converted to *HTML*, *PDF* and *EPUB*. AsciiDoc is much better suited for describing public APIs than *JavaDoc* or *Annotations*.
+
+You can generate your HTML5, PDF and EPUB documentation via the https://github.com/asciidoctor/asciidoctor-gradle-plugin[asciidoctor-gradle-plugin]. You can also use https://github.com/jbake-org/jbake[JBake], https://github.com/tomchristie/mkdocs[MkDocs], https://github.com/rtfd/readthedocs.org[ReadTheDocs] or https://github.com/tripit/slate[slate] to publish your AsciiDoc or Markdown documentation.
+
+The project requires at least JDK 7.
+
+== Usage
+
+_COMING SOON_: The project will be published in Maven Central.
+
+Add the following snippet to your Maven pom file:
+
+[source,xml]
+[subs="specialcharacters,attributes"]
+----
+...
+<plugins>
+  <plugin>
+    <groupId>com.redowlanalytics</groupId>
+    <artifactId>swagger2markup-maven-plugin</artifactId>
+    <version>{version}</version>
+    ...
+  </plugin>
+</plugins>
+...
+----
+
+The plugin adds a new task goal `swagger2markup:process-swagger`. This goal exposes a few properties as part of its configuration.
+
+.Properties
+[horizontal]
+inputDirectory:: specifies the directory where the swagger source is located. Use `inputDir file('src/docs/swagger')`
+    Default: `${project.basedir}/src/docs/swagger`.
+outputDirectory:: specifies the directory where the output should be stored. Use `outputDir file("${buildDir}/asciidoc")`
+    Default: `${project.build.directory}/${swagger2markup.markupLanguage}`.
+examplesDirectory:: specifies the directory where example snippets from spring-restdocs are located.
+    Default: empty (not mandatory)
+descriptionsDirectory:: specifies the directory where hand-written descriptions are located.
+    Default: empty (not mandatory)
+schemasDirectory:: specifies the directory where JSON or XML schema files are located.
+    Default: empty (not mandatory)
+markupLanguage:: specifies the markup output format.
+    Values: Any supported MarkupLanguage - Can be `asciidoc` or `markdown` 
+    Default: `asciidoc`
+separateDefinitions:: creates separate definition files for each model.
+    Default: `false`
+
+=== Example
+
+[source,xml]
+[subs="specialcharacters,attributes"]
+----
+<plugins>
+  <plugin>
+    <groupId>com.redowlanalytics</groupId>
+    <artifactId>swagger2markup-maven-plugin</artifactId>
+    <version>{version}</version>
+    <configuration>
+      <inputDirectory>src/docs/swagger</inputDirectory>
+      <examplesDirectory>src/docs/asciidoc/generated</examplesDirectory>
+      <descriptionsDirectory>src/docs/asciidoc</descriptionsDirectory>
+      <schemasDirectory>src/docs/schema</schemasDirectory>
+      <separateDefinitions>true</separateDefinitions>
+    </configuration>
+  </plugin>
+</plugins>
+----
+
+The configuration above would result in call to Swagger2Markup as follows:
+
+[source, java]
+----
+Swagger2MarkupConverter.from("src/docs/swagger")
+    .withExamples("src/docs/asciidoc/generated")
+    .withDescriptions("src/docs/asciidoc")
+    .withSchemas("src/docs/schemas")
+    .withSeparateDefinitions().build()
+    .intoFolder("build/asciidoc");
+----
+
+=== Full example
+
+==== Maven pom file
+
+[source,xml]
+[subs="specialcharacters,attributes"]
+----
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+          http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.redowlanalytics</groupId>
+    <artifactId>swagger2markup-sample</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <properties>
+        <swagger.input.directory>${project.basedir}/src/main/swagger</swagger.input.directory>
+        <base.generated.docs.dir>${project.build.directory}/generated-docs</base.generated.docs.dir>
+        <generated.asciidoc.directory>${base.generated.docs.dir}/asciidoc</generated.asciidoc.directory>
+        <asciidoctor.input.directory>${project.basedir}/src/main/asciidoc</asciidoctor.input.directory>
+        <asciidoctor.html.output.directory>${base.generated.docs.dir}/html</asciidoctor.html.output.directory>
+        <asciidoctor.pdf.output.directory>${base.generated.docs.dir}/pdf</asciidoctor.pdf.output.directory>
+    </properties>
+
+    <build>
+        <plugins>
+            <!-- First, use the swagger2markup plugin to generate asciidoc -->
+            <plugin>
+                <groupId>com.redowlanalytics</groupId>
+                <artifactId>swagger2markup-maven-plugin</artifactId>
+                <version>{version}</version>
+                <configuration>
+                    <inputDir>${swagger.input.directory}</inputDir>
+                    <outputDir>${generated.asciidoc.directory}</outputDir>
+                    <markupLanguage>asciidoc</markupLanguage>
+                </configuration>
+            </plugin>
+
+            <!-- Run the generated asciidoc through Asciidoctor to generate
+                 other documentation types, such as PDFs or HTML5 -->
+            <plugin>
+                <groupId>org.asciidoctor</groupId>
+                <artifactId>asciidoctor-maven-plugin</artifactId>
+                <version>1.5.2</version>
+                <!-- Include Asciidoctor PDF for pdf generation -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.asciidoctor</groupId>
+                        <artifactId>asciidoctorj-pdf</artifactId>
+                        <version>1.5.0-alpha.7</version>
+                    </dependency>
+                </dependencies>
+                <!-- Configure generic document generation settings -->
+                <configuration>
+                    <sourceDirectory>${asciidoctor.input.directory}</sourceDirectory>
+                    <sourceDocumentName>index.adoc</sourceDocumentName>
+                    <attributes>
+                        <doctype>book</doctype>
+                        <toc>left</toc>
+                        <toclevels>2</toclevels>
+                        <generated>${generated.asciidoc.directory}</generated>
+                    </attributes>
+                </configuration>
+                <!-- Since each execution can only handle one backend, run
+                     separate executions for each desired output type -->
+                <executions>
+                    <execution>
+                        <id>output-html</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>html5</backend>
+                            <outputDirectory>${asciidoctor.html.output.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>output-pdf</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>process-asciidoc</goal>
+                        </goals>
+                        <configuration>
+                            <backend>pdf</backend>
+                            <outputDirectory>${asciidoctor.pdf.output.directory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- Copy the static docs into build.outputDirectory to be included in the jar -->
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/static/docs</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${asciidoctor.html.output.directory}</directory>
+                                </resource>
+                                <resource>
+                                    <directory>${asciidoctor.pdf.output.directory}</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
+----
+
+==== Generate Swagger JSON during an unit test with springfox-staticdocs
+
+[source,java]
+----
+@WebAppConfiguration
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = Application.class, loader = SpringApplicationContextLoader.class)
+public class Swagger2MarkupTest {
+
+    @Autowired
+    private WebApplicationContext context;
+
+    private MockMvc mockMvc;
+
+    @Before
+    public void setUp() {
+        this.mockMvc = MockMvcBuilders.webAppContextSetup(this.context)
+                .apply(new RestDocumentationConfigurer()).build();
+    }
+
+    @Test
+    public void createSwaggerJson() throws Exception {
+        String outputDir = System.getProperty("io.springfox.staticdocs.outputDir");
+        this.mockMvc.perform(get("/v2/api-docs")
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(SwaggerResultHandler.outputDirectory(outputDir).build())
+                .andExpect(status().isOk());
+    }
+}
+----
+
+== Screenshots
+=== Swagger source
+image::images/swagger_json.PNG[swagger_json]
+
+=== Generated AsciiDoc
+image::images/asciidoc.PNG[asciidoc]
+
+=== Generated Markdown
+image::images/markdown.PNG[markdown]
+
+=== Generated HTML using AsciidoctorJ
+image::images/asciidoc_html.PNG[asciidoc_html]
+
+=== Generated PDF using AsciidoctorJ
+image::images/asciidoc_pdf.PNG[asciidoc_pdf]
+
+== License
+
+Copyright 2015 RedOwl Analytics
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.

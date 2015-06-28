@@ -21,10 +21,10 @@ public class Swagger2MarkupMojo extends AbstractMojo {
 
     private static final String PREFIX = "swagger2markup.";
 
-    @Parameter(property = PREFIX + "inputDirectory", defaultValue = "${basedir}/src/docs/swagger", required = true)
+    @Parameter(property = PREFIX + "inputDirectory", defaultValue = "${project.basedir}/src/docs/swagger", required = true)
     private File inputDirectory;
 
-    @Parameter(property = PREFIX + "outputDirectory", defaultValue = "${project.build.directory}/src/docs/swagger", required = true)
+    @Parameter(property = PREFIX + "outputDirectory", required = true)
     private File outputDirectory;
 
     @Parameter(property = PREFIX + "markupLanguage", defaultValue = "asciidoc", required = true)
