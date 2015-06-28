@@ -7,6 +7,8 @@ image:https://travis-ci.org/redowl/swagger2markup-maven-plugin.svg["Build Status
 
 == Overview
 
+_NOTE: This is a nearly identical version of https://github.com/RobWin/swagger2markup-gradle-plugin[RobWin's swagger2Markup-gradle-plugin], except it's been ported over to maven.  For a real commit history and all credit, see his project._
+
 The primary goal of https://github.com/RobWin/swagger2markup[Swagger2Markup] is to *simplify the generation of an up-to-date RESTful API documentation by combining documentation that's been hand-written with auto-generated API documentation* produced by https://github.com/swagger-api[Swagger]. The result is intended to be an *up-to-date, easy-to-read, on- and offline user guide*, comparable to https://developer.github.com/v3/[GitHub's API documentation]. The output of the plugin can be used as an alternative to https://github.com/swagger-api/swagger-ui[swagger-ui] and can be served as static content.
 
 The Swagger2Markup Maven Plugin simplifies the usage of https://github.com/RobWin/swagger2markup[Swagger2Markup]. The Plugin adds a Maven goal which converts a Swagger JSON or YAML file into several *AsciiDoc* or *GitHub Flavored Markdown* documents. The plugin supports the Swagger 1.2 and 2.0 specification. Internally the plugin uses https://github.com/RobWin/swagger2markup[Swagger2Markup] which in turn uses the _official_ https://github.com/swagger-api/swagger-parser[swagger-parser] and RobWin's https://github.com/RobWin/markup-document-builder[markup-document-builder].
@@ -263,6 +265,17 @@ image::images/asciidoc_html.PNG[asciidoc_html]
 
 === Generated PDF using AsciidoctorJ
 image::images/asciidoc_pdf.PNG[asciidoc_pdf]
+
+== Release Notes
+
+=== Version 0.1.0
+* Initial Version
+* Ported over https://github.com/RobWin/swagger2markup-gradle-plugin[RobWin's swagger2Markup-gradle-plugin] to maven plugin
+
+=== Version 0.6.3
+* Updated Swagger2Markup dependency to 0.6.3
+* Exposed Swagger2Markup's new "separateDefinitions" in plugin configuration
+* Improved Testing coverage
 
 == License
 
