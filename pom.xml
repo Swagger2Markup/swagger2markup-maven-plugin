@@ -73,6 +73,7 @@
         <maven.plugin.annotations.version>3.4</maven.plugin.annotations.version>
         <maven.plugin.api.version>3.3.3</maven.plugin.api.version>
         <maven.project.version>2.2.1</maven.project.version>
+        <mockito.version>1.10.19</mockito.version>
         <project.java.version>1.7</project.java.version>
         <spock.version>0.7-groovy-2.0</spock.version>
 
@@ -122,6 +123,12 @@
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
             <version>${assertj.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

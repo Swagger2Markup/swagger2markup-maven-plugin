@@ -5,14 +5,20 @@ import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
 import org.apache.commons.io.FileUtils;
+import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 public class Swagger2MarkupMojoTest {
 
@@ -31,6 +37,7 @@ public class Swagger2MarkupMojoTest {
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
         mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
         mojo.outputDirectory = new File(OUTPUT_DIR + "/asciidoc").getAbsoluteFile();
+        mojo.separateDefinitions = false;
 
         //when
         mojo.execute();
@@ -47,7 +54,7 @@ public class Swagger2MarkupMojoTest {
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
         mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
         mojo.outputDirectory = new File(OUTPUT_DIR + "/markdown").getAbsoluteFile();
-        mojo.markupLanguage = "MARKDOWN";
+        mojo.markupLanguage = "markdown";
 
         //when
         mojo.execute();
@@ -68,12 +75,13 @@ public class Swagger2MarkupMojoTest {
         mojo.schemasDirectory = new File(DOCS_DIR, "schemas").getAbsoluteFile();
         mojo.descriptionsDirectory = new File(DOCS_DIR, "descriptions").getAbsoluteFile();
         mojo.examplesDirectory = new File(DOCS_DIR, "examples").getAbsoluteFile();
+        mojo.separateDefinitions = true;
         mojo.execute();
 
         //then
         assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile());
         Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
-        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc");
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "pet.adoc");
 
         final File definitionsFile = new File(mojo.outputDirectory, "definitions.adoc");
         final File pathsFile = new File(mojo.outputDirectory, "paths.adoc");
@@ -82,6 +90,86 @@ public class Swagger2MarkupMojoTest {
         verifyFileContains(pathsFile, "test-curl");
         verifyFileContains(pathsFile, "test-http-request");
         verifyFileContains(pathsFile, "test-http-response");
+    }
+
+    @Test
+    public void testDebugLogging() throws Exception {
+        //mock enable debugging
+        Swagger2MarkupMojo mojo = Mockito.spy(new Swagger2MarkupMojo());
+        Log logSpy = Mockito.spy(mojo.getLog());
+        when(logSpy.isDebugEnabled()).thenReturn(true);
+        when(mojo.getLog()).thenReturn(logSpy);
+
+        //given
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.outputDirectory = new File(OUTPUT_DIR + "/markdown").getAbsoluteFile();
+        mojo.markupLanguage = "markdown";
+
+        //when
+        mojo.execute();
+
+        //then
+        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile());
+        Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
+        assertThat(outputFiles).containsOnly("definitions.md", "overview.md", "paths.md");
+    }
+
+    @Test
+    public void testNullOutputDirectory() throws Exception {
+        //given
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.projectBuildDir = new File(OUTPUT_DIR).getAbsolutePath();
+
+        //when
+        mojo.execute();
+
+        //then
+        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile());
+        Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
+        FileUtils.deleteDirectory(mojo.outputDirectory);
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc");
+    }
+
+    @Test(expected=MojoFailureException.class)
+    public void testMissingInputDirectory() throws Exception {
+        //given
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.inputDirectory = new File(INPUT_DIR, "non-existent").getAbsoluteFile();
+
+        //when
+        mojo.execute();
+    }
+
+    @Test(expected=MojoFailureException.class)
+    public void testEmptyInputDirectory() throws Exception {
+        //given
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        File emptyDir = new File(OUTPUT_DIR, "empty");
+        FileUtils.forceMkdir(emptyDir);
+        mojo.inputDirectory = emptyDir.getAbsoluteFile();
+
+        //when
+        mojo.execute();
+    }
+
+    @Test(expected = MojoFailureException.class)
+    public void testUnreadableOutputDirectory() throws Exception {
+        //given
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.outputDirectory = Mockito.mock(File.class, new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
+                if (!invocationOnMock.getMethod().getName().contains("toString")) {
+                    throw new IOException("test exception");
+                }
+                return null;
+            }
+        });
+
+        //when
+        mojo.execute();
     }
 
     private static Iterable<String> recursivelyListFileNames(File dir) throws Exception {
