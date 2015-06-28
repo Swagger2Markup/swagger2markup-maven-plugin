@@ -22,28 +22,28 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     private static final String PREFIX = "swagger2markup.";
 
     @Parameter(property = PREFIX + "inputDirectory", defaultValue = "${project.basedir}/src/docs/swagger", required = true)
-    private File inputDirectory;
+    protected File inputDirectory;
 
     @Parameter(property = PREFIX + "outputDirectory", required = true)
-    private File outputDirectory;
+    protected File outputDirectory;
 
     @Parameter(property = PREFIX + "markupLanguage", defaultValue = "asciidoc", required = true)
-    private String markupLanguage;
+    protected String markupLanguage = "asciidoc";
 
     @Parameter(property = PREFIX + "examplesDirectory", required = false)
-    private File examplesDirectory;
+    protected File examplesDirectory;
 
     @Parameter(property = PREFIX + "descriptionsDirectory", required = false)
-    private File descriptionsDirectory;
+    protected File descriptionsDirectory;
 
     @Parameter(property = PREFIX + "schemasDirectory", required = false)
-    private File schemasDirectory;
+    protected File schemasDirectory;
 
     @Parameter(property = PREFIX + "separateDefinitions", required = false)
-    private Boolean separateDefinitions;
+    protected Boolean separateDefinitions;
 
     @Parameter(defaultValue = "${project.build.directory}")
-    private String projectBuildDir;
+    protected String projectBuildDir;
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
