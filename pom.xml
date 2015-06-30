@@ -20,6 +20,12 @@
     <description>Swagger2Markup Maven Plugin</description>
     <url>https://github.com/redowl/swagger2markup-maven-plugin</url>
 
+    <scm>
+        <connection>scm:git:git@github.com:redowl/swagger2markup-maven-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com:redowl/swagger2markup-maven-plugin.git</developerConnection>
+        <url>git@github.com:redowl/swagger2markup-mavek-plugin.git</url>
+    </scm>
+
     <developers>
         <developer>
             <id>redowl</id>
@@ -70,9 +76,11 @@
         <logback.version>1.1.3</logback.version>
         <maven.compiler.plugin.version>3.3</maven.compiler.plugin.version>
         <maven.invoker.plugin.version>1.8</maven.invoker.plugin.version>
+        <maven.javadoc.plugin.version>2.10.3</maven.javadoc.plugin.version>
         <maven.plugin.annotations.version>3.4</maven.plugin.annotations.version>
         <maven.plugin.api.version>3.3.3</maven.plugin.api.version>
         <maven.project.version>2.2.1</maven.project.version>
+        <maven.source.plugin.version>2.4</maven.source.plugin.version>
         <mockito.version>1.10.19</mockito.version>
         <project.java.version>1.7</project.java.version>
         <spock.version>0.7-groovy-2.0</spock.version>
@@ -155,6 +163,33 @@
                     <source>${project.java.version}</source>
                     <target>${project.java.version}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>${maven.source.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven.javadoc.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- Pull in coverage/reporting plugins for TravisCI -->
