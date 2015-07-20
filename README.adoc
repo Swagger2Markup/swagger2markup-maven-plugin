@@ -1,6 +1,6 @@
 = Swagger2Markup Maven Plugin
 :author: RedOwl Analytics
-:version: 0.7.0
+:version: 0.7.1
 :hardbreaks:
 
 image:https://travis-ci.org/redowl/swagger2markup-maven-plugin.svg["Build Status", link="https://travis-ci.org/redowl/swagger2markup-maven-plugin"] image:https://coveralls.io/repos/redowl/swagger2markup-maven-plugin/badge.svg["Coverage Status", link="https://coveralls.io/r/redowl/swagger2markup-maven-plugin"] image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"] image:https://img.shields.io/badge/Twitter-redowlytics-blue.svg["Twitter", link="https://twitter.com/redowlytics"]
@@ -276,6 +276,12 @@ image::images/asciidoc_pdf.PNG[asciidoc_pdf]
 * Updated Swagger2Markup dependency to 0.6.3
 * Exposed Swagger2Markup's new "separateDefinitions" in plugin configuration
 * Improved Testing coverage
+
+=== Version 0.7.0
+* Updated Swagger2Markup dependency to 0.7.0
+
+=== Version 0.7.1
+* Updated Swagger2Markup dependency to 0.7.1
 
 == License
 
