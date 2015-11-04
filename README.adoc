@@ -130,8 +130,8 @@ Swagger2MarkupConverter.from("src/docs/swagger")
                 <artifactId>swagger2markup-maven-plugin</artifactId>
                 <version>{version}</version>
                 <configuration>
-                    <inputDir>${swagger.input.directory}</inputDir>
-                    <outputDir>${generated.asciidoc.directory}</outputDir>
+                    <inputDirectory>${swagger.input.directory}</inputDirectory>
+                    <outputDirectory>${generated.asciidoc.directory}</outputDirectory>
                     <markupLanguage>asciidoc</markupLanguage>
                 </configuration>
             </plugin>
