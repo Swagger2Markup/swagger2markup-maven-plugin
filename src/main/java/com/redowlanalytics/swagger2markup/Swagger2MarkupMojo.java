@@ -1,6 +1,8 @@
 package com.redowlanalytics.swagger2markup;
 
 import io.github.robwin.markup.builder.MarkupLanguage;
+import io.github.robwin.swagger2markup.GroupBy;
+import io.github.robwin.swagger2markup.OrderBy;
 import io.github.robwin.swagger2markup.Swagger2MarkupConverter;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -30,6 +32,12 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     @Parameter(property = PREFIX + "markupLanguage", defaultValue = "asciidoc", required = true)
     protected String markupLanguage = "asciidoc";
 
+    @Parameter(property = PREFIX + "pathsGroupedBy", required = false)
+    protected String pathsGroupedBy;
+
+    @Parameter(property = PREFIX + "definitionsOrderedBy", required = false)
+    protected String definitionsOrderedBy;
+
     @Parameter(property = PREFIX + "examplesDirectory", required = false)
     protected File examplesDirectory;
 
@@ -51,6 +59,8 @@ public class Swagger2MarkupMojo extends AbstractMojo {
             getLog().debug("convertSwagger2markup task started");
             getLog().debug("InputDir: " + inputDirectory);
             getLog().debug("OutputDir: " + outputDirectory);
+            getLog().debug("PathsGroupedBy: " + pathsGroupedBy);
+            getLog().debug("DefinitionsOrderedBy: " + definitionsOrderedBy);
             getLog().debug("ExamplesDir: " + examplesDirectory);
             getLog().debug("DescriptionsDir: " + descriptionsDirectory);
             getLog().debug("SchemasDir: " + schemasDirectory);
@@ -75,6 +85,12 @@ public class Swagger2MarkupMojo extends AbstractMojo {
             final Swagger2MarkupConverter.Builder builder = Swagger2MarkupConverter
                     .from(file.getAbsolutePath())
                     .withMarkupLanguage(markupLanguageEnum);
+            if(pathsGroupedBy != null){
+                builder.withPathsGroupedBy(GroupBy.valueOf(pathsGroupedBy.toUpperCase()));
+            }
+            if(definitionsOrderedBy != null){
+                builder.withDefinitionsOrderedBy(OrderBy.valueOf(definitionsOrderedBy.toUpperCase()));
+            }
             if(examplesDirectory != null){
                 getLog().debug("Include examples is enabled.");
                 builder.withExamples(examplesDirectory.getAbsolutePath());

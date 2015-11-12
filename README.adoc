@@ -1,17 +1,15 @@
 = Swagger2Markup Maven Plugin
 :author: RedOwl Analytics
-:version: 0.9.0
+:version: 0.9.1
 :hardbreaks:
 
 image:https://travis-ci.org/Swagger2Markup/swagger2markup-maven-plugin.svg["Build Status", link="https://travis-ci.org/Swagger2Markup/swagger2markup-maven-plugin"] image:https://coveralls.io/repos/redowl/swagger2markup-maven-plugin/badge.svg["Coverage Status", link="https://coveralls.io/r/redowl/swagger2markup-maven-plugin"] image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"] image:https://img.shields.io/badge/Twitter-redowlytics-blue.svg["Twitter", link="https://twitter.com/redowlytics"]
 
 == Overview
 
-_NOTE: This is a nearly identical version of https://github.com/RobWin/swagger2markup-gradle-plugin[RobWin's swagger2Markup-gradle-plugin], except it's been ported over to maven.  For a real commit history and all credit, see his project._
+The primary goal of https://github.com/Swagger2Markup/swagger2markup[Swagger2Markup] is to *simplify the generation of an up-to-date RESTful API documentation by combining documentation that's been hand-written with auto-generated API documentation* produced by https://github.com/swagger-api[Swagger]. The result is intended to be an *up-to-date, easy-to-read, on- and offline user guide*, comparable to https://developer.github.com/v3/[GitHub's API documentation]. The output of the plugin can be used as an alternative to https://github.com/swagger-api/swagger-ui[swagger-ui] and can be served as static content.
 
-The primary goal of https://github.com/RobWin/swagger2markup[Swagger2Markup] is to *simplify the generation of an up-to-date RESTful API documentation by combining documentation that's been hand-written with auto-generated API documentation* produced by https://github.com/swagger-api[Swagger]. The result is intended to be an *up-to-date, easy-to-read, on- and offline user guide*, comparable to https://developer.github.com/v3/[GitHub's API documentation]. The output of the plugin can be used as an alternative to https://github.com/swagger-api/swagger-ui[swagger-ui] and can be served as static content.
-
-The Swagger2Markup Maven Plugin simplifies the usage of https://github.com/RobWin/swagger2markup[Swagger2Markup]. The Plugin adds a Maven goal which converts a Swagger JSON or YAML file into several *AsciiDoc* or *GitHub Flavored Markdown* documents. The plugin supports the Swagger 1.2 and 2.0 specification. Internally the plugin uses https://github.com/RobWin/swagger2markup[Swagger2Markup] which in turn uses the _official_ https://github.com/swagger-api/swagger-parser[swagger-parser] and RobWin's https://github.com/RobWin/markup-document-builder[markup-document-builder].
+The Swagger2Markup Maven Plugin simplifies the usage of https://github.com/Swagger2Markup/swagger2markup[Swagger2Markup]. The Plugin adds a Maven goal which converts a Swagger JSON or YAML file into several *AsciiDoc* or *GitHub Flavored Markdown* documents. The plugin supports the Swagger 1.2 and 2.0 specification. Internally the plugin uses https://github.com/Swagger2Markup/swagger2markup[Swagger2Markup] which in turn uses the _official_ https://github.com/swagger-api/swagger-parser[swagger-parser] and a https://github.com/Swagger2Markup/markup-document-builder[markup-document-builder].
 
 You can use the plugin to convert your contract-first Swagger YAML file into a human-readable format and combine it with hand-written documentation. As an alternative, you can choose the code-first approach and use Swagger2Markup together with https://github.com/swagger-api/swagger-core/tree/master/samples/java-jersey2[Swagger JAX-RS], https://github.com/springfox/springfox[springfox] or https://github.com/spring-projects/spring-restdocs[spring-restdocs]. See https://github.com/RobWin/swagger2markup#using-swagger2markup[Swagger2Markup user guide] for more details.
 
@@ -20,6 +18,10 @@ http://asciidoctor.org/docs/asciidoc-writers-guide/[AsciiDoc] is preferable to M
 You can generate your HTML5, PDF and EPUB documentation via the https://github.com/asciidoctor/asciidoctor-gradle-plugin[asciidoctor-gradle-plugin]. You can also use https://github.com/jbake-org/jbake[JBake], https://github.com/tomchristie/mkdocs[MkDocs], https://github.com/rtfd/readthedocs.org[ReadTheDocs] or https://github.com/tripit/slate[slate] to publish your AsciiDoc or Markdown documentation.
 
 The project requires at least JDK 7.
+
+== Reference documentation
+
+The documentation can be found at https://swagger2markup.readme.io[Reference documentation]
 
 == Usage
 
@@ -249,39 +251,6 @@ public class Swagger2MarkupTest {
     }
 }
 ----
-
-== Screenshots
-=== Swagger source
-image::images/swagger_json.PNG[swagger_json]
-
-=== Generated AsciiDoc
-image::images/asciidoc.PNG[asciidoc]
-
-=== Generated Markdown
-image::images/markdown.PNG[markdown]
-
-=== Generated HTML using AsciidoctorJ
-image::images/asciidoc_html.PNG[asciidoc_html]
-
-=== Generated PDF using AsciidoctorJ
-image::images/asciidoc_pdf.PNG[asciidoc_pdf]
-
-== Release Notes
-
-=== Version 0.1.0
-* Initial Version
-* Ported over https://github.com/RobWin/swagger2markup-gradle-plugin[RobWin's swagger2Markup-gradle-plugin] to maven plugin
-
-=== Version 0.6.3
-* Updated Swagger2Markup dependency to 0.6.3
-* Exposed Swagger2Markup's new "separateDefinitions" in plugin configuration
-* Improved Testing coverage
-
-=== Version 0.7.0
-* Updated Swagger2Markup dependency to 0.7.0
-
-=== Version 0.7.1
-* Updated Swagger2Markup dependency to 0.7.1
 
 == License
 
