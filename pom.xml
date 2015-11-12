@@ -11,19 +11,19 @@
         <version>7</version>
     </parent>
 
-    <groupId>com.redowlanalytics</groupId>
+    <groupId>io.github.robwin</groupId>
     <artifactId>swagger2markup-maven-plugin</artifactId>
     <version>0.9.1</version>
     <packaging>maven-plugin</packaging>
 
     <name>Swagger2Markup Maven Plugin</name>
     <description>Swagger2Markup Maven Plugin</description>
-    <url>https://github.com/redowl/swagger2markup-maven-plugin</url>
+    <url>https://github.com/Swagger2Markup/swagger2markup-maven-plugin</url>
 
     <scm>
-        <connection>scm:git:git@github.com:redowl/swagger2markup-maven-plugin.git</connection>
-        <developerConnection>scm:git:git@github.com:redowl/swagger2markup-maven-plugin.git</developerConnection>
-        <url>git@github.com:redowl/swagger2markup-mavek-plugin.git</url>
+        <connection>scm:git:git@github.com/Swagger2Markup/swagger2markup-maven-plugin.git</connection>
+        <developerConnection>scm:git:git@github.com/Swagger2Markup/swagger2markup-maven-plugin.git</developerConnection>
+        <url>git@github.com/Swagger2Markup/swagger2markup-maven-plugin.git</url>
     </scm>
 
     <developers>
@@ -47,8 +47,16 @@
             </roles>
             <timezone>UTC-5</timezone>
         </developer>
+        <developer>
+            <id>rwinkler</id>
+            <name>Robert Winkler</name>
+            <url>https://github.com/RobWin</url>
+            <roles>
+                <role>Contributor</role>
+            </roles>
+            <timezone>UTC-5</timezone>
+        </developer>
     </developers>
-
     <licenses>
         <license>
             <name>Apache License, Version 2.0</name>
@@ -62,7 +70,7 @@
     </prerequisites>
 
     <issueManagement>
-        <url>https://github.com/redowl/swagger2markup-maven-plugin/issues</url>
+        <url>https://github.com/Swagger2Markup/swagger2markup-maven-plugin/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
 

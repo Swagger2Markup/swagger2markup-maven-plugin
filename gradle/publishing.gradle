@@ -63,7 +63,7 @@ publishing {
         mavenJava(MavenPublication) {
             from components.java
             pom.withXml {
-                def devs = ['RobWin': 'Robert Winkler']
+                def devs = ['RobWin': 'Robert Winkler', 'rusnyder': 'Russell Snyder', 'redowl': 'RedOwl Analytics']
                 def root = asNode()
 
                 root.dependencies.'*'.findAll() {
@@ -74,17 +74,17 @@ publishing {
                     it.scope*.value = 'compile'
                 }
 
-                root.appendNode('name', 'swagger2markup-gradle-plugin')
+                root.appendNode('name', 'swagger2markup-maven-plugin')
                 root.appendNode('packaging', 'jar')
-                root.appendNode('url', 'https://github.com/Swagger2Markup/swagger2markup-gradle-plugin')
-                root.appendNode('description', 'A Swagger to Markup (AsciiDoc and Markdown) converter Gradle Plugin.')
+                root.appendNode('url', 'https://github.com/Swagger2Markup/swagger2markup-maven-plugin')
+                root.appendNode('description', 'A Swagger to Markup (AsciiDoc and Markdown) converter Maven Plugin.')
 
                 def license = root.appendNode('licenses').appendNode('license')
                 license.appendNode('name', 'Apache-2.0')
-                license.appendNode('url', 'https://github.com/Swagger2Markup/swagger2markup-gradle-plugin/blob/master/LICENSE.txt')
+                license.appendNode('url', 'https://github.com/Swagger2Markup/swagger2markup-maven-plugin/blob/master/LICENSE.txt')
                 license.appendNode('distribution', 'repo')
 
-                root.appendNode('scm').appendNode('url', 'https://github.com/Swagger2Markup/swagger2markup-gradle-plugin.git')
+                root.appendNode('scm').appendNode('url', 'https://github.com/Swagger2Markup/swagger2markup-maven-plugin.git')
 
                 def developers = root.appendNode('developers')
                 devs.each {
