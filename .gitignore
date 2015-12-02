@@ -23,7 +23,6 @@ nbactions.xml
 target/
 generated/
 build/
-*.jar
 *.war
 *.ear
 dependency-reduced-pom.xml
