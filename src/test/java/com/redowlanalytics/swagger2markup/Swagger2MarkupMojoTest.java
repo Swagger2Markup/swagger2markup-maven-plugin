@@ -35,7 +35,7 @@ public class Swagger2MarkupMojoTest {
     public void testSwagger2MarkupConvertsSwaggerToAsciiDoc() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
         mojo.outputDirectory = new File(OUTPUT_DIR + "/asciidoc").getAbsoluteFile();
         mojo.separateDefinitions = false;
 
@@ -43,7 +43,7 @@ public class Swagger2MarkupMojoTest {
         mojo.execute();
 
         //then
-        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile());
+        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath());
         Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
         assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc");
     }
@@ -52,7 +52,7 @@ public class Swagger2MarkupMojoTest {
     public void testSwagger2MarkupConvertsSwaggerToMarkdown() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
         mojo.outputDirectory = new File(OUTPUT_DIR + "/markdown").getAbsoluteFile();
         mojo.markupLanguage = "markdown";
 
@@ -60,7 +60,7 @@ public class Swagger2MarkupMojoTest {
         mojo.execute();
 
         //then
-        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile());
+        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath());
         Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
         assertThat(outputFiles).containsOnly("definitions.md", "overview.md", "paths.md");
     }
@@ -69,7 +69,7 @@ public class Swagger2MarkupMojoTest {
     public void testSwagger2MarkupEnableWithDescriptionsWithExamplesAndWithSchemas() throws Exception {
         //when
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
         mojo.outputDirectory = new File(OUTPUT_DIR + "/asciidoc").getAbsoluteFile();
         mojo.markupLanguage = "asciidoc";
         mojo.schemasDirectory = new File(DOCS_DIR, "schemas").getAbsoluteFile();
@@ -79,7 +79,7 @@ public class Swagger2MarkupMojoTest {
         mojo.execute();
 
         //then
-        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile());
+        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath());
         Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
         assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "pet.adoc");
 
@@ -101,7 +101,7 @@ public class Swagger2MarkupMojoTest {
         when(mojo.getLog()).thenReturn(logSpy);
 
         //given
-        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
         mojo.outputDirectory = new File(OUTPUT_DIR + "/markdown").getAbsoluteFile();
         mojo.markupLanguage = "markdown";
 
@@ -109,7 +109,7 @@ public class Swagger2MarkupMojoTest {
         mojo.execute();
 
         //then
-        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile());
+        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath());
         Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
         assertThat(outputFiles).containsOnly("definitions.md", "overview.md", "paths.md");
     }
@@ -118,14 +118,14 @@ public class Swagger2MarkupMojoTest {
     public void testNullOutputDirectory() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
         mojo.projectBuildDir = new File(OUTPUT_DIR).getAbsolutePath();
 
         //when
         mojo.execute();
 
         //then
-        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile());
+        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath());
         Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
         FileUtils.deleteDirectory(mojo.outputDirectory);
         assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc");
@@ -135,7 +135,7 @@ public class Swagger2MarkupMojoTest {
     public void testMissingInputDirectory() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.inputDirectory = new File(INPUT_DIR, "non-existent").getAbsoluteFile();
+        mojo.inputDirectory = new File(INPUT_DIR, "non-existent").getAbsoluteFile().getAbsolutePath();
 
         //when
         mojo.execute();
@@ -147,7 +147,7 @@ public class Swagger2MarkupMojoTest {
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
         File emptyDir = new File(OUTPUT_DIR, "empty");
         FileUtils.forceMkdir(emptyDir);
-        mojo.inputDirectory = emptyDir.getAbsoluteFile();
+        mojo.inputDirectory = emptyDir.getAbsoluteFile().getAbsolutePath();
 
         //when
         mojo.execute();
@@ -157,7 +157,7 @@ public class Swagger2MarkupMojoTest {
     public void testUnreadableOutputDirectory() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
         mojo.outputDirectory = Mockito.mock(File.class, new Answer() {
             @Override
             public Object answer(InvocationOnMock invocationOnMock) throws Throwable {
