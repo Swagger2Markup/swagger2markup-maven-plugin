@@ -24,7 +24,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     private static final String PREFIX = "swagger2markup.";
 
     @Parameter(property = PREFIX + "inputDirectory", defaultValue = "${project.basedir}/src/docs/swagger", required = true)
-    protected File inputDirectory;
+    protected String inputDirectory;
 
     @Parameter(property = PREFIX + "outputDirectory", required = true)
     protected File outputDirectory;
@@ -69,50 +69,59 @@ public class Swagger2MarkupMojo extends AbstractMojo {
         }
 
         final MarkupLanguage markupLanguageEnum = MarkupLanguage.valueOf(markupLanguage.toUpperCase());
-        if(outputDirectory == null) {
+        if (outputDirectory == null) {
             outputDirectory = new File(projectBuildDir, markupLanguage.toLowerCase());
         }
 
-        final File[] files = inputDirectory.listFiles();
-        if(files == null || files.length == 0) {
-            throw new MojoFailureException("No swagger files found in directory: " + inputDirectory);
-        }
+        if (inputDirectory.startsWith("http")) {
+            convertFileOrUrl(markupLanguageEnum, inputDirectory);
+        } else {
 
-        for(File file : files) {
-            if (getLog().isDebugEnabled()) {
-                getLog().debug("File: " + file.getAbsolutePath());
+            final File[] files = new File(inputDirectory).getAbsoluteFile().listFiles();
+            if (files == null || files.length == 0) {
+                throw new MojoFailureException("No swagger files found in directory: " + inputDirectory);
             }
-            final Swagger2MarkupConverter.Builder builder = Swagger2MarkupConverter
-                    .from(file.getAbsolutePath())
-                    .withMarkupLanguage(markupLanguageEnum);
-            if(pathsGroupedBy != null){
-                builder.withPathsGroupedBy(GroupBy.valueOf(pathsGroupedBy.toUpperCase()));
-            }
-            if(definitionsOrderedBy != null){
-                builder.withDefinitionsOrderedBy(OrderBy.valueOf(definitionsOrderedBy.toUpperCase()));
-            }
-            if(examplesDirectory != null){
-                getLog().debug("Include examples is enabled.");
-                builder.withExamples(examplesDirectory.getAbsolutePath());
-            }
-            if(descriptionsDirectory != null){
-                getLog().debug("Include descriptions is enabled.");
-                builder.withDescriptions(descriptionsDirectory.getAbsolutePath());
-            }
-            if(schemasDirectory != null){
-                getLog().debug("Include schemas is enabled.");
-                builder.withSchemas(schemasDirectory.getAbsolutePath());
-            }
-            if(separateDefinitions != null && separateDefinitions) {
-                getLog().debug("Separate definitions enabled.");
-                builder.withSeparatedDefinitions();
-            }
-            try {
-                builder.build().intoFolder(outputDirectory.getAbsolutePath());
-            } catch (IOException e) {
-                throw new MojoFailureException("Failed to write markup to directory: " + outputDirectory, e);
+
+            for (File file : files) {
+                if (getLog().isDebugEnabled()) {
+                    getLog().debug("File: " + file.getAbsolutePath());
+                }
+                convertFileOrUrl(markupLanguageEnum, file.getAbsolutePath());
             }
         }
         getLog().debug("convertSwagger2markup task finished");
+    }
+
+    private void convertFileOrUrl(MarkupLanguage markupLanguageEnum, String source) throws MojoFailureException {
+        final Swagger2MarkupConverter.Builder builder = Swagger2MarkupConverter
+                .from(source)
+                .withMarkupLanguage(markupLanguageEnum);
+        if (pathsGroupedBy != null) {
+            builder.withPathsGroupedBy(GroupBy.valueOf(pathsGroupedBy.toUpperCase()));
+        }
+        if (definitionsOrderedBy != null) {
+            builder.withDefinitionsOrderedBy(OrderBy.valueOf(definitionsOrderedBy.toUpperCase()));
+        }
+        if (examplesDirectory != null) {
+            getLog().debug("Include examples is enabled.");
+            builder.withExamples(examplesDirectory.getAbsolutePath());
+        }
+        if (descriptionsDirectory != null) {
+            getLog().debug("Include descriptions is enabled.");
+            builder.withDescriptions(descriptionsDirectory.getAbsolutePath());
+        }
+        if (schemasDirectory != null) {
+            getLog().debug("Include schemas is enabled.");
+            builder.withSchemas(schemasDirectory.getAbsolutePath());
+        }
+        if (separateDefinitions != null && separateDefinitions) {
+            getLog().debug("Separate definitions enabled.");
+            builder.withSeparatedDefinitions();
+        }
+        try {
+            builder.build().intoFolder(outputDirectory.getAbsolutePath());
+        } catch (IOException e) {
+            throw new MojoFailureException("Failed to write markup to directory: " + outputDirectory, e);
+        }
     }
 }
