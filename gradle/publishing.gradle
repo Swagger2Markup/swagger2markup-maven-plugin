@@ -1,4 +1,5 @@
 import java.text.SimpleDateFormat
+import org.apache.tools.ant.filters.ReplaceTokens
 
 Date buildTimeAndDate = new Date()
 ext {
@@ -9,6 +10,7 @@ ext {
 def projectArtifactId = 'swagger2markup-maven-plugin'
 
 jar {
+    filter(ReplaceTokens, tokens: ['projectVersion': project.version])
     manifest {
         attributes(
                 'Built-By': 'Robert Winkler',
