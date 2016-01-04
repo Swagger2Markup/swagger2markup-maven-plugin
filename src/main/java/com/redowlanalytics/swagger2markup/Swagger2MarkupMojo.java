@@ -69,6 +69,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
             getLog().debug("SchemasDir: " + schemasDirectory);
             getLog().debug("MarkupLanguage: " + markupLanguage);
             getLog().debug("SeparateDefinitions: " + separateDefinitions);
+            getLog().debug("OutputLanguage: " + outputLanguage);
         }
 
         final MarkupLanguage markupLanguageEnum = MarkupLanguage.valueOf(markupLanguage.toUpperCase());
