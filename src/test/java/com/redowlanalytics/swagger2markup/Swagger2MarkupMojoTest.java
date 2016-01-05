@@ -4,6 +4,7 @@ import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
+import io.github.robwin.swagger2markup.Language;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -16,6 +17,7 @@ import org.mockito.stubbing.Answer;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -170,6 +172,24 @@ public class Swagger2MarkupMojoTest {
 
         //when
         mojo.execute();
+    }
+
+    @Test
+    public void testSwagger2MarkupConvertsWithRussianOutput() throws Exception {
+        //given
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
+        mojo.outputDirectory = new File(OUTPUT_DIR + "/asciidoc").getAbsoluteFile();
+        mojo.separateDefinitions = false;
+        mojo.outputLanguage = Language.RU;
+
+        //when
+        mojo.execute();
+
+        //then
+        assertThat(new String(java.nio.file.Files
+                .readAllBytes(Paths.get(mojo.outputDirectory + File.separator + "definitions.adoc"))))
+                .contains("== Определения");
     }
 
     private static Iterable<String> recursivelyListFileNames(File dir) throws Exception {
