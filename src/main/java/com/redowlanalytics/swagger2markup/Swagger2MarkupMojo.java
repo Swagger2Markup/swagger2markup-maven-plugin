@@ -2,9 +2,9 @@ package com.redowlanalytics.swagger2markup;
 
 import io.github.robwin.markup.builder.MarkupLanguage;
 import io.github.robwin.swagger2markup.GroupBy;
+import io.github.robwin.swagger2markup.Language;
 import io.github.robwin.swagger2markup.OrderBy;
 import io.github.robwin.swagger2markup.Swagger2MarkupConverter;
-
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -53,6 +53,9 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}")
     protected String projectBuildDir;
 
+    @Parameter(defaultValue = "EN")
+    protected Language outputLanguage;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (getLog().isDebugEnabled()) {
@@ -66,6 +69,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
             getLog().debug("SchemasDir: " + schemasDirectory);
             getLog().debug("MarkupLanguage: " + markupLanguage);
             getLog().debug("SeparateDefinitions: " + separateDefinitions);
+            getLog().debug("OutputLanguage: " + outputLanguage);
         }
 
         final MarkupLanguage markupLanguageEnum = MarkupLanguage.valueOf(markupLanguage.toUpperCase());
@@ -117,6 +121,9 @@ public class Swagger2MarkupMojo extends AbstractMojo {
         if (separateDefinitions != null && separateDefinitions) {
             getLog().debug("Separate definitions enabled.");
             builder.withSeparatedDefinitions();
+        }
+        if (outputLanguage != null) {
+            builder.withOutputLanguage(outputLanguage);
         }
         try {
             builder.build().intoFolder(outputDirectory.getAbsolutePath());
