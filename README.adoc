@@ -1,7 +1,7 @@
 = Swagger2Markup Maven Plugin
 :hardbreaks:
 
-image:https://travis-ci.org/Swagger2Markup/swagger2markup-maven-plugin.svg["Build Status", link="https://travis-ci.org/Swagger2Markup/swagger2markup-maven-plugin"] image:https://coveralls.io/repos/redowl/swagger2markup-maven-plugin/badge.svg["Coverage Status", link="https://coveralls.io/r/redowl/swagger2markup-maven-plugin"] image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"] image:https://img.shields.io/badge/Twitter-redowlytics-blue.svg["Twitter", link="https://twitter.com/redowlytics"]
+image:https://travis-ci.org/Swagger2Markup/swagger2markup-maven-plugin.svg["Build Status", link="https://travis-ci.org/Swagger2Markup/swagger2markup-maven-plugin"] image:https://coveralls.io/repos/redowl/swagger2markup-maven-plugin/badge.svg["Coverage Status", link="https://coveralls.io/r/redowl/swagger2markup-maven-plugin"] image:http://img.shields.io/badge/license-ASF2-blue.svg["Apache License 2", link="http://www.apache.org/licenses/LICENSE-2.0.txt"] image::https://api.bintray.com/packages/robwin/maven/swagger2markup-maven-plugin/images/download.svg[link="https://bintray.com/robwin/maven/swagger2markup-maven-plugin/_latestVersion"]
 
 == Overview
 
