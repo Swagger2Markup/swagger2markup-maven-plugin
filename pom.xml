@@ -111,7 +111,7 @@
         <dependency>
             <groupId>io.github.robwin</groupId>
             <artifactId>swagger2markup</artifactId>
-            <version>${swagger2markup.version}</version>
+            <version>${version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -166,11 +166,12 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-plugin-plugin</artifactId>
-                    <version>{maven.plugin.annotations.version}</version>
+                    <version>${maven.plugin.annotations.version}</version>
                     <configuration>
-                        <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                        <skipErrorNoDescriptorsFound>false</skipErrorNoDescriptorsFound>
                     </configuration>
                     <executions>
+
                         <execution>
                             <id>mojo-descriptor</id>
                             <phase>process-classes</phase>

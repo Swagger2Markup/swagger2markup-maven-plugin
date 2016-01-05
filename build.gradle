@@ -61,7 +61,7 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 task pluginDescriptor(type: Exec) {
-    commandLine 'mvn', '-e', '-B', 'org.apache.maven.plugins:maven-plugin-plugin:3.4:descriptor'
+    commandLine 'mvn', '-e', '-B', 'install', 'org.apache.maven.plugins:maven-plugin-plugin:3.4:descriptor', '-DskipTests'
 }
 
 jacocoTestReport {
