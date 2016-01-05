@@ -13,7 +13,7 @@ buildscript {
 }
 
 group = 'io.github.robwin'
-version = '0.9.1'
+version = '0.9.2'
 description = 'A Swagger to Markup (AsciiDoc and Markdown) converter Maven Plugin.'
 
 apply plugin: 'groovy'
@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    compile 'io.github.robwin:swagger2markup:0.9.1'
+    compile 'io.github.robwin:swagger2markup:0.9.2'
     compile 'org.apache.maven:maven-plugin-api:3.3.3'
     compile 'org.apache.maven.plugin-tools:maven-plugin-annotations:3.4'
     testCompile 'junit:junit:4.12'
