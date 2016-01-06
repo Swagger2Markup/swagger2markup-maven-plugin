@@ -5,6 +5,7 @@ import io.github.robwin.swagger2markup.GroupBy;
 import io.github.robwin.swagger2markup.Language;
 import io.github.robwin.swagger2markup.OrderBy;
 import io.github.robwin.swagger2markup.Swagger2MarkupConverter;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -56,6 +57,9 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     @Parameter(defaultValue = "EN")
     protected Language outputLanguage;
 
+    @Parameter(property = PREFIX + "swaggerFile", required = false)
+    protected String swaggerFile;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (getLog().isDebugEnabled()) {
@@ -70,6 +74,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
             getLog().debug("MarkupLanguage: " + markupLanguage);
             getLog().debug("SeparateDefinitions: " + separateDefinitions);
             getLog().debug("OutputLanguage: " + outputLanguage);
+            getLog().debug("SwaggerFile: " + swaggerFile);
         }
 
         final MarkupLanguage markupLanguageEnum = MarkupLanguage.valueOf(markupLanguage.toUpperCase());
@@ -81,17 +86,29 @@ public class Swagger2MarkupMojo extends AbstractMojo {
             convertFileOrUrl(markupLanguageEnum, inputDirectory);
         } else {
 
-            final File[] files = new File(inputDirectory).getAbsoluteFile().listFiles();
-            if (files == null || files.length == 0) {
-                throw new MojoFailureException("No swagger files found in directory: " + inputDirectory);
-            }
+            if (StringUtils.isEmpty(swaggerFile)) {
 
-            for (File file : files) {
-                if (getLog().isDebugEnabled()) {
-                    getLog().debug("File: " + file.getAbsolutePath());
+                final File[] files = new File(inputDirectory).getAbsoluteFile().listFiles();
+                if (files == null || files.length == 0) {
+                    throw new MojoFailureException("No swagger files found in directory: " + inputDirectory);
                 }
+
+                for (File file : files) {
+                    if (getLog().isDebugEnabled()) {
+                        getLog().debug("File: " + file.getAbsolutePath());
+                    }
+                    convertFileOrUrl(markupLanguageEnum, file.getAbsolutePath());
+                }
+            } else {
+
+                final File file = new File(inputDirectory, swaggerFile).getAbsoluteFile();
+                if (!file.exists()) {
+                    throw new MojoFailureException("Can't find swagger file '" + file.getAbsolutePath() + "'");
+                }
+
                 convertFileOrUrl(markupLanguageEnum, file.getAbsolutePath());
             }
+
         }
         getLog().debug("convertSwagger2markup task finished");
     }
