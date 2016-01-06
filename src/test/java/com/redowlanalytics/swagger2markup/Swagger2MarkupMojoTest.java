@@ -25,12 +25,31 @@ import static org.mockito.Mockito.when;
 public class Swagger2MarkupMojoTest {
 
     private static final String INPUT_DIR = "src/test/resources/docs/swagger";
+    private static final String SWAGGER_FILE = "swagger.json";
     private static final String OUTPUT_DIR = "target/generated-docs";
     private static final String DOCS_DIR = "src/test/resources/docs";
 
     @Before
     public void clearGeneratedData() throws Exception {
         FileUtils.deleteDirectory(new File(OUTPUT_DIR));
+    }
+
+    @Test
+    public void testSwagger2MarkupConvertsSwaggerFileToAsciidoc() throws Exception {
+        //given
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.inputDirectory = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
+        mojo.swaggerFile = SWAGGER_FILE;
+        mojo.outputDirectory = new File(OUTPUT_DIR + "/asciidoc").getAbsoluteFile();
+        mojo.separateDefinitions = false;
+
+        //when
+        mojo.execute();
+
+        //then
+        assertThat(mojo.inputDirectory).isEqualTo(new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath());
+        Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDirectory);
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc");
     }
 
     @Test
