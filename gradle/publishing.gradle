@@ -9,8 +9,11 @@ ext {
 
 def projectArtifactId = 'swagger2markup-maven-plugin'
 
-jar {
+processResources {
     filter(ReplaceTokens, tokens: ['projectVersion': project.version])
+}
+
+jar {
     manifest {
         attributes(
                 'Built-By': 'Robert Winkler',

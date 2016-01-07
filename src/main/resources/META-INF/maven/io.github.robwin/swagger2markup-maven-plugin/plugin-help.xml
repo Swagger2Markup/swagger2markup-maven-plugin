@@ -7,7 +7,7 @@
   <description>Swagger2Markup Maven Plugin</description>
   <groupId>io.github.robwin</groupId>
   <artifactId>swagger2markup-maven-plugin</artifactId>
-  <version>0.9.2</version>
+  <version>@projectVersion@</version>
   <goalPrefix>swagger2markup</goalPrefix>
   <mojos>
     <mojo>
