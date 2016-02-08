@@ -13,7 +13,7 @@
 
     <groupId>io.github.robwin</groupId>
     <artifactId>swagger2markup-maven-plugin</artifactId>
-    <version>0.9.2</version>
+    <version>${swagger2markup.version}-2</version>
     <packaging>maven-plugin</packaging>
 
     <name>Swagger2Markup Maven Plugin</name>
@@ -93,7 +93,7 @@
         <project.java.version>1.7</project.java.version>
         <spock.version>0.7-groovy-2.0</spock.version>
 
-        <swagger2markup.version>0.9.1</swagger2markup.version>
+        <swagger2markup.version>0.9.2</swagger2markup.version>
     </properties>
 
     <dependencyManagement>
@@ -111,7 +111,7 @@
         <dependency>
             <groupId>io.github.robwin</groupId>
             <artifactId>swagger2markup</artifactId>
-            <version>${version}</version>
+            <version>${swagger2markup.version}</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
@@ -171,13 +171,19 @@
                         <skipErrorNoDescriptorsFound>false</skipErrorNoDescriptorsFound>
                     </configuration>
                     <executions>
-
                         <execution>
-                            <id>mojo-descriptor</id>
-                            <phase>process-classes</phase>
+                            <id>default-descriptor</id>
                             <goals>
                                 <goal>descriptor</goal>
                             </goals>
+                            <phase>process-classes</phase>
+                        </execution>
+                        <execution>
+                            <id>help-descriptor</id>
+                            <goals>
+                                <goal>helpmojo</goal>
+                            </goals>
+                            <phase>process-classes</phase>
                         </execution>
                     </executions>
                 </plugin>
