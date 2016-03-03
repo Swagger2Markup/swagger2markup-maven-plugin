@@ -1,4 +1,4 @@
-package com.redowlanalytics.swagger2markup;
+package io.github.robwin.swagger2markup;
 
 import io.github.robwin.markup.builder.MarkupLanguage;
 import io.github.robwin.swagger2markup.GroupBy;

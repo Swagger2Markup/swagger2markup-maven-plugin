@@ -1,10 +1,9 @@
-package com.redowlanalytics.swagger2markup;
+package io.github.robwin.swagger2markup;
 
 import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Files;
-import io.github.robwin.swagger2markup.Language;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;

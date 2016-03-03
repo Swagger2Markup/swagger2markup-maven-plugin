@@ -22,7 +22,7 @@
             <aggregator>false</aggregator>
             <requiresOnline>false</requiresOnline>
             <inheritedByDefault>true</inheritedByDefault>
-            <implementation>com.redowlanalytics.swagger2markup.Swagger2MarkupMojo</implementation>
+            <implementation>io.github.robwin.swagger2markup.Swagger2MarkupMojo</implementation>
             <language>java</language>
             <instantiationStrategy>per-lookup</instantiationStrategy>
             <executionStrategy>once-per-session</executionStrategy>
