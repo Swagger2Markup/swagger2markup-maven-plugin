@@ -23,3 +23,6 @@
 
 === Version 0.9.2
 * Updated Swagger2Markup dependency from 0.9.1 to 0.9.2
+
+=== Version 0.9.3
+* Fixed plugin.xml and plugin-help.xml
