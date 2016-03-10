@@ -1,15 +1,19 @@
 language: java
 jdk:
-  - oraclejdk7
+- oraclejdk7
 before_install:
- - chmod +x gradlew
+- chmod +x gradlew
 after_success:
 - ./gradlew jacocoTestReport coveralls
 notifications:
   webhooks:
     urls:
-      - https://webhooks.gitter.im/e/9c620e84679284b7d621
-    on_success: change  # options: [always|never|change] default: always
-    on_failure: always  # options: [always|never|change] default: always
-    on_start: false     # default: false
-Your unique webhook url for this service:
+    - https://webhooks.gitter.im/e/9c620e84679284b7d621
+    on_success: change
+    on_failure: always
+    on_start: false
+Your unique webhook url for this service: 
+env:
+  global:
+  - secure: PsTUcnj3qi/vk2jkPrn495GUgxlWA7O569heaxMNn+26oHagBdhAS32qBtg36xQQieGzMxeC+Id8VdRMuFSjJzUqk8kwx0E8238goBta3B4CBPQvj+ihBLmsZfwhqTjoCUhrj1EpKbZE6bJ0VDAYhsJ6a7FsyAs6hqRLoJ+e+wNBC5WfkkKi0pCNFkFBdRdcKicTJ/jonnvaqKGDc7KdoKkHpmm8YxIx26Pcm8gzl9rHMRlYg4AVDkf+j37spNAvxqlwNIAHz+A4DBBJ5kn+PFEbc+d4SUXUV99aNht6Romlyv2jiHK5iVdb7zcesvg/ELYmVglssHmwPyXymmCTjK/8gwzF29Oxfcauut+cbSY5fIhIapLyp3hSlSp9SpAJGlA7gpQRn9XBLwlpFH0z6jaoaxz81P2RHv1YjIPo78Vd6iV1Zl7MXQum1WStuutDHBWvaJ1P00S4+ay4Md84xkc4cnfOXxuFifXiRuoHtx6UJSWZdG/2YG3EdooLagFUyMcHOppwb3ue7NRmEIyLJSFbZhnTgA5Us1UFudDwDecBxm+REHO6uHjQYgK1e3RZnfAm+GCCIT6MRKdrQX3BSIntRRw54erGNOFgfTo1qiIOxXbjLe7UlsE7ciiCCIr8rWgKsWjuIttyPy7TJ/dAq7lbdoaocJR/t7opfeIaFhM=
+  - secure: IUGfnzVFP7SDeukxaCcn3xuE6jFuUdgXcetek1Zw9J4ukX97HOwwUd7Xw/DKRkGLeN0zelNDKzeVdnmjq6zy6Zblhgn1BeHgMH2eANz5OxN0rZD5BEHzNyCLKn2r31G+wf0aDUXeBW/0ucwGx9RAcK2/mOgIC2ngn6YX4MhjIPcPAdSGn6WkTtglWHr4+r33x5/UNdlci7rIouZuCTlLd8WnlSVbN5XUX4a+6pHd70oVI4roLK5uRjGvGEr+60bZylfMKmClTVE2td7RWnO6wy5HnQs3jmLZunevAazETppBjtn1t5YuUMKidWaEauhKMx+PORvWJs37PXDzkl1AKAYTF3BCMNHDBjE7kh8XqCMkP2EPO+AMk1xWsm6Bv6YnMQALUJtnnL/94zYJgi3FWKexRq/+0KGnh/jZ4xqi51vs7TPOKOjdClWNvDCbfTQMAoRa9MkjyBDb+dhjQy3Cx79QPEjXsf630LwsdJGQkuYAWnv2hOXQQGqe+uTbGB9ckN9FTWZLWGbLSgKdxuU6Z+85I+Kz1PNY8GEpM44axlTKXmUwUK3mkpIMW8kbrTAku1KQXwSEGdDcqGJCxklF7V6TQ5v8CZvv032qckNXceyd/HxpCNj4egaYsemsn/DYGYSg59ioYGLJFL3fRtXdt6L67JdB7HOn4F3w4bUgdQE=
