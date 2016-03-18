@@ -61,7 +61,7 @@
                     <type>java.lang.String</type>
                     <required>true</required>
                     <editable>true</editable>
-                    <description></description>
+                    <description>markup language of the output, i.e. asciidoc, markdown (as supported by the swagger2markup version). This parameter is case-insensitive.</description>
                 </parameter>
                 <parameter>
                     <name>outputDirectory</name>
@@ -75,7 +75,7 @@
                     <type>io.github.robwin.swagger2markup.Language</type>
                     <required>false</required>
                     <editable>true</editable>
-                    <description></description>
+                    <description>language code, i.e. EN, RU (as supported by the swagger2markup version)</description>
                 </parameter>
                 <parameter>
                     <name>pathsGroupedBy</name>
