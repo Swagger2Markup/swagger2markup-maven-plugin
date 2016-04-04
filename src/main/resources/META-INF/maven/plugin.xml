@@ -5,7 +5,7 @@
 <plugin>
     <name>Swagger2Markup Maven Plugin</name>
     <description>Swagger2Markup Maven Plugin</description>
-    <groupId>io.github.robwin</groupId>
+    <groupId>io.github.swagger2markup</groupId>
     <artifactId>swagger2markup-maven-plugin</artifactId>
     <version>@projectVersion@</version>
     <goalPrefix>swagger2markup</goalPrefix>
@@ -22,7 +22,7 @@
             <aggregator>false</aggregator>
             <requiresOnline>false</requiresOnline>
             <inheritedByDefault>true</inheritedByDefault>
-            <implementation>io.github.robwin.swagger2markup.Swagger2MarkupMojo</implementation>
+            <implementation>io.github.swagger2markup.Swagger2MarkupMojo</implementation>
             <language>java</language>
             <instantiationStrategy>per-lookup</instantiationStrategy>
             <executionStrategy>once-per-session</executionStrategy>
