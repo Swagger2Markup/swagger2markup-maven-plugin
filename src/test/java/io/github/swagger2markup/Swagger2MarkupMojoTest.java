@@ -4,7 +4,6 @@ import io.github.swagger2markup.markup.builder.MarkupLanguage;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.MojoFailureException;
-import org.apache.maven.plugin.logging.Log;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -19,87 +18,83 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 public class Swagger2MarkupMojoTest {
 
     private static final String INPUT_DIR = "src/test/resources/docs/swagger";
-    private static final String SWAGGER_FILE = "swagger.json";
+    private static final String SWAGGER_OUTPUT_FILE = "swagger";
+    private static final String SWAGGER_INPUT_FILE = "swagger.json";
     private static final String OUTPUT_DIR = "target/generated-docs";
+    private File outputDir;
 
     @Before
     public void clearGeneratedData() throws Exception {
-        File output = new File(OUTPUT_DIR);
-        FileUtils.deleteQuietly(output);
-        Files.createDirectory(output.toPath());
+        outputDir = new File(OUTPUT_DIR);
+        FileUtils.deleteQuietly(outputDir);
+        Files.createDirectory(outputDir.toPath());
     }
 
     @Test
-    public void testSwagger2MarkupConvertsSwaggerFileToAsciidoc() throws Exception {
+    public void shouldConvertIntoFile() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR, SWAGGER_FILE).getAbsoluteFile().getAbsolutePath();
-        mojo.output = new File(OUTPUT_DIR).getAbsoluteFile();
+        mojo.input = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
+        mojo.outputFile = new File(OUTPUT_DIR, SWAGGER_OUTPUT_FILE).getAbsoluteFile();
 
         //when
         mojo.execute();
 
         //then
-        Iterable<String> outputFiles = recursivelyListFileNames(mojo.output);
-        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+        Iterable<String> outputFiles = recursivelyListFileNames(outputDir);
+        assertThat(outputFiles).containsOnly("swagger.adoc");
     }
 
     @Test
-    public void testSwagger2MarkupConvertsSwaggerToAsciiDoc() throws Exception {
+    public void shouldConvertIntoDirectory() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
-        mojo.output = new File(OUTPUT_DIR).getAbsoluteFile();
+        mojo.input = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
+        mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
 
         //when
         mojo.execute();
 
         //then
-        Iterable<String> outputFiles = recursivelyListFileNames(mojo.output);
+        Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDir);
         assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
     }
 
     @Test
-    public void testSwagger2MarkupConvertsSwaggerToMarkdown() throws Exception {
+    public void shouldConvertIntoMarkdown() throws Exception {
         //given
         Map<String, String> config = new HashMap<>();
         config.put(Swagger2MarkupProperties.MARKUP_LANGUAGE, MarkupLanguage.MARKDOWN.toString());
 
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
-        mojo.output = new File(OUTPUT_DIR).getAbsoluteFile();
+        mojo.input = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
+        mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
         mojo.config = config;
 
         //when
         mojo.execute();
 
         //then
-        Iterable<String> outputFiles = recursivelyListFileNames(mojo.output);
+        Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDir);
         assertThat(outputFiles).containsOnly("definitions.md", "overview.md", "paths.md", "security.md");
     }
 
     @Test
-    public void testDebugLogging() throws Exception {
-        //mock enable debugging
-        Swagger2MarkupMojo mojo = Mockito.spy(new Swagger2MarkupMojo());
-        Log logSpy = Mockito.spy(mojo.getLog());
-        when(logSpy.isDebugEnabled()).thenReturn(true);
-        when(mojo.getLog()).thenReturn(logSpy);
-
+    public void shouldConvertFromUrl() throws Exception {
         //given
-        mojo.input = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
-        mojo.output = new File(OUTPUT_DIR).getAbsoluteFile();
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.input = "http://petstore.swagger.io/v2/swagger.json";
+        mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
 
         //when
         mojo.execute();
 
         //then
-        Iterable<String> outputFiles = recursivelyListFileNames(mojo.output);
+        Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDir);
         assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
     }
 
@@ -117,8 +112,8 @@ public class Swagger2MarkupMojoTest {
     public void testUnreadableOutputDirectory() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
-        mojo.output = Mockito.mock(File.class, (Answer) invocationOnMock -> {
+        mojo.input = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
+        mojo.outputDir = Mockito.mock(File.class, (Answer) invocationOnMock -> {
             if (!invocationOnMock.getMethod().getName().contains("toString")) {
                 throw new IOException("test exception");
             }

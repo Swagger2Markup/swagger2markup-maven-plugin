@@ -16,6 +16,7 @@
 package io.github.swagger2markup;
 
 import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
+import io.github.swagger2markup.utils.URIUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -23,15 +24,10 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.github.swagger2markup.Swagger2MarkupProperties.*;
+import static io.github.swagger2markup.Swagger2MarkupProperties.PROPERTIES_PREFIX;
 
 /**
  * Basic mojo to invoke the {@link Swagger2MarkupConverter}
@@ -40,11 +36,14 @@ import static io.github.swagger2markup.Swagger2MarkupProperties.*;
 @Mojo(name = "convertSwagger2markup")
 public class Swagger2MarkupMojo extends AbstractMojo {
 
-    @Parameter(property = PROPERTIES_PREFIX + ".input", defaultValue = "${project.basedir}/src/docs/swagger")
+    @Parameter(property = PROPERTIES_PREFIX + ".input")
     protected String input;
 
-    @Parameter(property = PROPERTIES_PREFIX + ".output", defaultValue = "${project.build.directory}/asciidoc")
-    protected File output;
+    @Parameter(property = PROPERTIES_PREFIX + ".outputDir")
+    protected File outputDir;
+
+    @Parameter(property = PROPERTIES_PREFIX + ".outputFile")
+    protected File outputFile;
 
     @Parameter
     protected Map<String, String> config = new HashMap<>();
@@ -53,8 +52,9 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (getLog().isDebugEnabled()) {
             getLog().debug("convertSwagger2markup goal started");
-            getLog().debug("Input: " + input);
-            getLog().debug("Output: " + output);
+            getLog().debug("input: " + input);
+            getLog().debug("outputDir: " + outputDir);
+            getLog().debug("outputFile: " + outputFile);
             for(Map.Entry<String, String> entry : this.config.entrySet()){
                 getLog().debug(entry.getKey() + ": " + entry.getValue());
             }
@@ -62,22 +62,15 @@ public class Swagger2MarkupMojo extends AbstractMojo {
 
         try{
             Swagger2MarkupConfig swagger2MarkupConfig = new Swagger2MarkupConfigBuilder(config).build();
-            if(input.startsWith("http")){
-                Swagger2MarkupConverter.from(URI.create(input))
-                        .withConfig(swagger2MarkupConfig).build().toPath(output.toPath());
+            Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(URIUtils.create(input))
+                    .withConfig(swagger2MarkupConfig).build();
+
+            if(outputFile != null){
+                converter.toFile(outputFile.toPath());
+            }else if (outputDir != null){
+                converter.toFolder(outputDir.toPath());
             }else {
-                Path inputPath = Paths.get(input);
-                if (Files.isDirectory(inputPath)) {
-                    try {
-                        Files.list(inputPath).forEach(path -> Swagger2MarkupConverter.from(path)
-                                .withConfig(swagger2MarkupConfig).build().toPath(output.toPath()));
-                    } catch (IOException e) {
-                        throw new MojoFailureException(String.format("Failed to list files in directory %s", inputPath));
-                    }
-                } else {
-                    Swagger2MarkupConverter.from(inputPath)
-                            .withConfig(swagger2MarkupConfig).build().toPath(output.toPath());
-                }
+                throw new IllegalArgumentException("Either outputFile or outputDir parameter must be used");
             }
         }catch(Exception e){
             throw new MojoFailureException("Failed to execute goal 'convertSwagger2markup'", e);
