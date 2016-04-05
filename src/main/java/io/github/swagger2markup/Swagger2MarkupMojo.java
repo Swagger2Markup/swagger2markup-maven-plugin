@@ -27,8 +27,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static io.github.swagger2markup.Swagger2MarkupProperties.PROPERTIES_PREFIX;
-
 /**
  * Basic mojo to invoke the {@link Swagger2MarkupConverter}
  * during the maven build cycle
@@ -36,13 +34,13 @@ import static io.github.swagger2markup.Swagger2MarkupProperties.PROPERTIES_PREFI
 @Mojo(name = "convertSwagger2markup")
 public class Swagger2MarkupMojo extends AbstractMojo {
 
-    @Parameter(property = PROPERTIES_PREFIX + ".input")
-    protected String input;
+    @Parameter(property = "swaggerInput")
+    protected String swaggerInput;
 
-    @Parameter(property = PROPERTIES_PREFIX + ".outputDir")
+    @Parameter(property = "outputDir")
     protected File outputDir;
 
-    @Parameter(property = PROPERTIES_PREFIX + ".outputFile")
+    @Parameter(property = "outputFile")
     protected File outputFile;
 
     @Parameter
@@ -52,7 +50,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (getLog().isDebugEnabled()) {
             getLog().debug("convertSwagger2markup goal started");
-            getLog().debug("input: " + input);
+            getLog().debug("swaggerInput: " + swaggerInput);
             getLog().debug("outputDir: " + outputDir);
             getLog().debug("outputFile: " + outputFile);
             for(Map.Entry<String, String> entry : this.config.entrySet()){
@@ -62,7 +60,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
 
         try{
             Swagger2MarkupConfig swagger2MarkupConfig = new Swagger2MarkupConfigBuilder(config).build();
-            Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(URIUtils.create(input))
+            Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(URIUtils.create(swaggerInput))
                     .withConfig(swagger2MarkupConfig).build();
 
             if(outputFile != null){

@@ -13,13 +13,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Swagger2MarkupMojoTest {
+public class Swagger2MarkupMojoTest{
 
     private static final String INPUT_DIR = "src/test/resources/docs/swagger";
     private static final String SWAGGER_OUTPUT_FILE = "swagger";
@@ -31,14 +32,14 @@ public class Swagger2MarkupMojoTest {
     public void clearGeneratedData() throws Exception {
         outputDir = new File(OUTPUT_DIR);
         FileUtils.deleteQuietly(outputDir);
-        Files.createDirectory(outputDir.toPath());
+        Files.createDirectory(Paths.get(OUTPUT_DIR));
     }
 
     @Test
     public void shouldConvertIntoFile() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
+        mojo.swaggerInput = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
         mojo.outputFile = new File(OUTPUT_DIR, SWAGGER_OUTPUT_FILE).getAbsoluteFile();
 
         //when
@@ -53,7 +54,7 @@ public class Swagger2MarkupMojoTest {
     public void shouldConvertIntoDirectory() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
+        mojo.swaggerInput = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
         mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
 
         //when
@@ -71,7 +72,7 @@ public class Swagger2MarkupMojoTest {
         config.put(Swagger2MarkupProperties.MARKUP_LANGUAGE, MarkupLanguage.MARKDOWN.toString());
 
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
+        mojo.swaggerInput = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
         mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
         mojo.config = config;
 
@@ -87,7 +88,7 @@ public class Swagger2MarkupMojoTest {
     public void shouldConvertFromUrl() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = "http://petstore.swagger.io/v2/swagger.json";
+        mojo.swaggerInput = "http://petstore.swagger.io/v2/swagger.json";
         mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
 
         //when
@@ -102,7 +103,7 @@ public class Swagger2MarkupMojoTest {
     public void testMissingInputDirectory() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR, "non-existent").getAbsoluteFile().getAbsolutePath();
+        mojo.swaggerInput = new File(INPUT_DIR, "non-existent").getAbsoluteFile().getAbsolutePath();
 
         //when
         mojo.execute();
@@ -112,7 +113,7 @@ public class Swagger2MarkupMojoTest {
     public void testUnreadableOutputDirectory() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
-        mojo.input = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
+        mojo.swaggerInput = new File(INPUT_DIR, SWAGGER_INPUT_FILE).getAbsoluteFile().getAbsolutePath();
         mojo.outputDir = Mockito.mock(File.class, (Answer) invocationOnMock -> {
             if (!invocationOnMock.getMethod().getName().contains("toString")) {
                 throw new IOException("test exception");
