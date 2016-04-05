@@ -12,8 +12,6 @@ import org.mockito.stubbing.Answer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +30,6 @@ public class Swagger2MarkupMojoTest{
     public void clearGeneratedData() throws Exception {
         outputDir = new File(OUTPUT_DIR);
         FileUtils.deleteQuietly(outputDir);
-        Files.createDirectory(Paths.get(OUTPUT_DIR));
     }
 
     @Test
