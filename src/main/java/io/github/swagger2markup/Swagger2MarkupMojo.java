@@ -34,7 +34,7 @@ import java.util.Map;
 @Mojo(name = "convertSwagger2markup")
 public class Swagger2MarkupMojo extends AbstractMojo {
 
-    @Parameter(property = "swaggerInput")
+    @Parameter(property = "swaggerInput", required = true)
     protected String swaggerInput;
 
     @Parameter(property = "outputDir")
