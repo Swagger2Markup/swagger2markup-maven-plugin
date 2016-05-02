@@ -37,12 +37,14 @@ if (!project.hasProperty('ossPassword')) ext.ossPassword = ''
 bintray {
     user = project.bintrayUsername
     key = project.bintrayApiKey
+    userOrg = 'swagger2markup'
     dryRun = false //Whether to run this as dry-run, without deploying
     publish = true //If version should be auto published after an upload
     publications = ['mavenJava']
     pkg {
-        repo = 'maven'
+        repo = 'Maven'
         name = 'swagger2markup-maven-plugin'
+        userOrg = 'swagger2markup'
         websiteUrl = 'https://github.com/Swagger2Markup/swagger2markup-maven-plugin'
         issueTrackerUrl = 'https://github.com/Swagger2Markup/swagger2markup-maven-plugin/issues'
         vcsUrl = 'https://github.com/Swagger2Markup/swagger2markup-maven-plugin.git'
