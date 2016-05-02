@@ -37,7 +37,6 @@ if (!project.hasProperty('ossPassword')) ext.ossPassword = ''
 bintray {
     user = project.bintrayUsername
     key = project.bintrayApiKey
-    userOrg = 'swagger2markup'
     dryRun = false //Whether to run this as dry-run, without deploying
     publish = true //If version should be auto published after an upload
     publications = ['mavenJava']
