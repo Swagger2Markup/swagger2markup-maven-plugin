@@ -19,7 +19,7 @@ The project requires at least JDK 7.
 
 == Reference documentation
 
-The documentation can be found at https://swagger2markup.readme.io[Reference documentation]
+The documentation can be found at http://swagger2markup.github.io/swagger2markup/1.0.0/[Reference documentation]
 
 == License
 
