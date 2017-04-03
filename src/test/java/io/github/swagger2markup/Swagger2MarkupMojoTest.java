@@ -33,6 +33,20 @@ public class Swagger2MarkupMojoTest{
     }
 
     @Test
+    public void shouldSkipExecution() throws Exception {
+        //given
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.outputFile = new File(OUTPUT_DIR, SWAGGER_OUTPUT_FILE).getAbsoluteFile();
+        mojo.skip = true;
+
+        //when
+        mojo.execute();
+
+        //then
+        assertThat(mojo.outputFile).doesNotExist();
+    }
+
+    @Test
     public void shouldConvertIntoFile() throws Exception {
         //given
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
