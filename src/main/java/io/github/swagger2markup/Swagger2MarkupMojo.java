@@ -46,8 +46,17 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     @Parameter
     protected Map<String, String> config = new HashMap<>();
 
+    @Parameter(property = "skip")
+    protected boolean skip;
+
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
+
+        if (skip) {
+            getLog().info("convertSwagger2markup is skipped.");
+            return;
+        }
+
         if (getLog().isDebugEnabled()) {
             getLog().debug("convertSwagger2markup goal started");
             getLog().debug("swaggerInput: " + swaggerInput);
