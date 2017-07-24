@@ -44,3 +44,6 @@
 
 == Version 1.3.2
 * PR #33: Added an option to skip the execution of the plugin
+
+== Version 1.3.3
+* Issue #35: Invalid plugin descriptor error on Release 1.3.2
