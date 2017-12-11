@@ -13,7 +13,7 @@
 
     <groupId>io.github.swagger2markup</groupId>
     <artifactId>swagger2markup-maven-plugin</artifactId>
-    <version>1.3.3</version>
+    <version>1.3.4</version>
     <packaging>maven-plugin</packaging>
 
     <name>Swagger2Markup Maven Plugin</name>
@@ -70,7 +70,7 @@
         <maven.source.plugin.version>2.4</maven.source.plugin.version>
         <mockito.version>1.10.19</mockito.version>
         <project.java.version>1.8</project.java.version>
-        <swagger2markup.version>1.3.1</swagger2markup.version>
+        <swagger2markup.version>1.3.2</swagger2markup.version>
     </properties>
 
     <repositories>

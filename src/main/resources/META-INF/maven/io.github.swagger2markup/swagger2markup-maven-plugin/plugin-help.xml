@@ -7,7 +7,7 @@
   <description>Swagger2Markup Maven Plugin</description>
   <groupId>io.github.swagger2markup</groupId>
   <artifactId>swagger2markup-maven-plugin</artifactId>
-  <version>1.3.3</version>
+  <version>1.3.4</version>
   <goalPrefix>swagger2markup</goalPrefix>
   <mojos>
     <mojo>
