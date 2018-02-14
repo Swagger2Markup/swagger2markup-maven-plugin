@@ -110,12 +110,13 @@ public class Swagger2MarkupMojo extends AbstractMojo {
 
     private File getEffectiveOutputDirWhenInputIsAFolder(Swagger2MarkupConverter converter) {
         /*
-         * When the Swagger input is a local folder e.g. /Users/foo/ you'll want to group the generated output in the
-         * configured output directory. For that the same folder structure as in the input folder is built in the
-         * output folder. Example:
+         * When the Swagger input is a local folder (e.g. /Users/foo/) you'll want to group the generated output in the
+         * configured output directory. The most obvious approach is to replicate the folder structure from the input
+         * folder to the output folder. Example:
+         * - swaggerInput is set to /Users/foo
          * - there's a Swagger file at /Users/foo/bar-service/v1/bar.yaml
          * - outputDir is set to /tmp/asciidoc
-         * - files are generated to /tmp/asciidoc/bar-service/v1
+         * - markdown files from bar.yaml are generated to /tmp/asciidoc/bar-service/v1
          */
         String swaggerFilePath = converter.getContext().getSwaggerLocation().getPath(); // /Users/foo/bar-service/v1/bar.yaml
         String swaggerFileFolder = StringUtils.substringBeforeLast(swaggerFilePath, File.separator); // /Users/foo/bar-service/v1
