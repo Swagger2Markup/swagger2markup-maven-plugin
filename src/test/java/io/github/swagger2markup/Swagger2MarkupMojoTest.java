@@ -18,9 +18,11 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Swagger2MarkupMojoTest{
+public class Swagger2MarkupMojoTest {
 
-    private static final String INPUT_DIR = "src/test/resources/docs/swagger";
+    private static final String RESOURCES_DIR = "src/test/resources";
+    private static final String SWAGGER_DIR = "/docs/swagger";
+    private static final String INPUT_DIR = RESOURCES_DIR + SWAGGER_DIR;
     private static final String SWAGGER_OUTPUT_FILE = "swagger";
     private static final String SWAGGER_INPUT_FILE = "swagger.json";
     private static final String OUTPUT_DIR = "target/generated-docs";
@@ -73,6 +75,23 @@ public class Swagger2MarkupMojoTest{
 
         //then
         Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDir);
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+    }
+
+    @Test
+    public void shouldConvertIntoDirectoryIfInputIsDirectory() throws Exception {
+        //given
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.swaggerInput = new File(RESOURCES_DIR).getAbsoluteFile().getAbsolutePath();
+        mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
+
+        //when
+        mojo.execute();
+
+        //then
+        Iterable<String> outputFiles = recursivelyListFileNames(new File(mojo.outputDir, SWAGGER_DIR));
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+        outputFiles = recursivelyListFileNames(new File(mojo.outputDir, SWAGGER_DIR + "2"));
         assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
     }
 

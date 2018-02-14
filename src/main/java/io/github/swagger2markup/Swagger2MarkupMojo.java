@@ -17,6 +17,8 @@ package io.github.swagger2markup;
 
 import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
 import io.github.swagger2markup.utils.URIUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -62,26 +64,62 @@ public class Swagger2MarkupMojo extends AbstractMojo {
             getLog().debug("swaggerInput: " + swaggerInput);
             getLog().debug("outputDir: " + outputDir);
             getLog().debug("outputFile: " + outputFile);
-            for(Map.Entry<String, String> entry : this.config.entrySet()){
+            for (Map.Entry<String, String> entry : this.config.entrySet()) {
                 getLog().debug(entry.getKey() + ": " + entry.getValue());
             }
         }
 
-        try{
+        try {
             Swagger2MarkupConfig swagger2MarkupConfig = new Swagger2MarkupConfigBuilder(config).build();
-            Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(URIUtils.create(swaggerInput))
-                    .withConfig(swagger2MarkupConfig).build();
-
-            if(outputFile != null){
-                converter.toFile(outputFile.toPath());
-            }else if (outputDir != null){
-                converter.toFolder(outputDir.toPath());
-            }else {
-                throw new IllegalArgumentException("Either outputFile or outputDir parameter must be used");
+            if (isLocalFolder(swaggerInput)) {
+                FileUtils.listFiles(new File(swaggerInput), new String[]{"yaml", "yml", "json"}, true)
+                    .forEach(f -> {
+                        Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(f.toURI())
+                                                                               .withConfig(swagger2MarkupConfig)
+                                                                               .build();
+                        swaggerToMarkup(converter, true);
+                });
+            } else {
+                Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(URIUtils.create(swaggerInput))
+                                                                           .withConfig(swagger2MarkupConfig).build();
+                swaggerToMarkup(converter, false);
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new MojoFailureException("Failed to execute goal 'convertSwagger2markup'", e);
         }
         getLog().debug("convertSwagger2markup goal finished");
+    }
+
+    private boolean isLocalFolder(String swaggerInput) {
+        return !swaggerInput.toLowerCase().startsWith("http") && new File(swaggerInput).isDirectory();
+    }
+
+    private void swaggerToMarkup(Swagger2MarkupConverter converter, boolean inputIsLocalFolder) {
+        if (outputFile != null) {
+            converter.toFile(outputFile.toPath());
+        } else if (outputDir != null) {
+            File effectiveOutputDir = outputDir;
+            if (inputIsLocalFolder) {
+                effectiveOutputDir = getEffectiveOutputDirWhenInputIsAFolder(converter);
+            }
+            converter.toFolder(effectiveOutputDir.toPath());
+        } else {
+            throw new IllegalArgumentException("Either outputFile or outputDir parameter must be used");
+        }
+    }
+
+    private File getEffectiveOutputDirWhenInputIsAFolder(Swagger2MarkupConverter converter) {
+        /*
+         * When the Swagger input is a local folder e.g. /Users/foo/ you'll want to group the generated output in the
+         * configured output directory. For that the same folder structure as in the input folder is built in the
+         * output folder. Example:
+         * - there's a Swagger file at /Users/foo/bar-service/v1/bar.yaml
+         * - outputDir is set to /tmp/asciidoc
+         * - files are generated to /tmp/asciidoc/bar-service/v1
+         */
+        String swaggerFilePath = converter.getContext().getSwaggerLocation().getPath(); // /Users/foo/bar-service/v1/bar.yaml
+        String swaggerFileFolder = StringUtils.substringBeforeLast(swaggerFilePath, File.separator); // /Users/foo/bar-service/v1
+        String outputDirAddendum = StringUtils.remove(swaggerFileFolder, swaggerInput); // bar-service/v1
+        return new File(outputDir, outputDirAddendum);
     }
 }
