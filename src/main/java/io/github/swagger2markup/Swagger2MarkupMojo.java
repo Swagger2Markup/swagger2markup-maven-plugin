@@ -18,6 +18,7 @@ package io.github.swagger2markup;
 import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
 import io.github.swagger2markup.utils.URIUtils;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -26,6 +27,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -72,8 +74,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
         try {
             Swagger2MarkupConfig swagger2MarkupConfig = new Swagger2MarkupConfigBuilder(config).build();
             if (isLocalFolder(swaggerInput)) {
-                FileUtils.listFiles(new File(swaggerInput), new String[]{"yaml", "yml", "json"}, true)
-                    .forEach(f -> {
+                getSwaggerFiles(new File(swaggerInput), true).forEach(f -> {
                         Swagger2MarkupConverter converter = Swagger2MarkupConverter.from(f.toURI())
                                                                                .withConfig(swagger2MarkupConfig)
                                                                                .build();
@@ -109,18 +110,43 @@ public class Swagger2MarkupMojo extends AbstractMojo {
     }
 
     private File getEffectiveOutputDirWhenInputIsAFolder(Swagger2MarkupConverter converter) {
+        String outputDirAddendum = getInputDirStructurePath(converter);
+        if (multipleSwaggerFilesInSwaggerLocationFolder(converter)) {
+            /*
+             * If the folder the current Swagger file resides in contains at least one other Swagger file then the
+             * output dir must have an extra subdir per file to avoid markdown files getting overwritten.
+             */
+            outputDirAddendum += "/" + extracSwaggerFileNameWithoutExtension(converter);
+        }
+        return new File(outputDir, outputDirAddendum);
+    }
+
+    private String getInputDirStructurePath(Swagger2MarkupConverter converter) {
         /*
          * When the Swagger input is a local folder (e.g. /Users/foo/) you'll want to group the generated output in the
          * configured output directory. The most obvious approach is to replicate the folder structure from the input
          * folder to the output folder. Example:
          * - swaggerInput is set to /Users/foo
-         * - there's a Swagger file at /Users/foo/bar-service/v1/bar.yaml
+         * - there's a single Swagger file at /Users/foo/bar-service/v1/bar.yaml
          * - outputDir is set to /tmp/asciidoc
-         * - markdown files from bar.yaml are generated to /tmp/asciidoc/bar-service/v1
+         * -> markdown files from bar.yaml are generated to /tmp/asciidoc/bar-service/v1
          */
         String swaggerFilePath = converter.getContext().getSwaggerLocation().getPath(); // /Users/foo/bar-service/v1/bar.yaml
         String swaggerFileFolder = StringUtils.substringBeforeLast(swaggerFilePath, File.separator); // /Users/foo/bar-service/v1
-        String outputDirAddendum = StringUtils.remove(swaggerFileFolder, swaggerInput); // bar-service/v1
-        return new File(outputDir, outputDirAddendum);
+        return StringUtils.remove(swaggerFileFolder, swaggerInput); // /bar-service/v1
+    }
+
+    private boolean multipleSwaggerFilesInSwaggerLocationFolder(Swagger2MarkupConverter converter) {
+        Collection<File> swaggerFiles = getSwaggerFiles(new File(converter.getContext().getSwaggerLocation())
+          .getParentFile(), false);
+        return swaggerFiles != null && swaggerFiles.size() > 1;
+    }
+
+    private String extracSwaggerFileNameWithoutExtension(Swagger2MarkupConverter converter) {
+        return FilenameUtils.removeExtension(new File(converter.getContext().getSwaggerLocation()).getName());
+    }
+
+    private Collection<File> getSwaggerFiles(File directory, boolean recursive) {
+        return FileUtils.listFiles(directory, new String[]{"yaml", "yml", "json"}, recursive);
     }
 }
