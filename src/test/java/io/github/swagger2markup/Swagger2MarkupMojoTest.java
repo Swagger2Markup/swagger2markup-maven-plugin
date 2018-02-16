@@ -12,15 +12,19 @@ import org.mockito.stubbing.Answer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class Swagger2MarkupMojoTest{
+public class Swagger2MarkupMojoTest {
 
-    private static final String INPUT_DIR = "src/test/resources/docs/swagger";
+    private static final String RESOURCES_DIR = "src/test/resources";
+    private static final String SWAGGER_DIR = "/docs/swagger";
+    private static final String INPUT_DIR = RESOURCES_DIR + SWAGGER_DIR;
     private static final String SWAGGER_OUTPUT_FILE = "swagger";
     private static final String SWAGGER_INPUT_FILE = "swagger.json";
     private static final String OUTPUT_DIR = "target/generated-docs";
@@ -74,6 +78,42 @@ public class Swagger2MarkupMojoTest{
         //then
         Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDir);
         assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+    }
+
+    @Test
+    public void shouldConvertIntoDirectoryIfInputIsDirectory() throws Exception {
+        //given that the input folder contains a nested structure with Swagger files
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.swaggerInput = new File(RESOURCES_DIR).getAbsoluteFile().getAbsolutePath();
+        mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
+
+        //when
+        mojo.execute();
+
+        //then
+        Iterable<String> outputFiles = recursivelyListFileNames(new File(mojo.outputDir, SWAGGER_DIR));
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+        outputFiles = listFileNames(new File(mojo.outputDir, SWAGGER_DIR + "2"), false);
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+    }
+
+    @Test
+    public void shouldConvertIntoSubDirectoryIfMultipleSwaggerFilesInSameInput() throws Exception {
+        //given that the input folder contains two Swagger files
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.swaggerInput = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
+        mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
+
+        //when
+        mojo.execute();
+
+        //then
+        Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDir);
+        List<String> directoryNames = Arrays.asList(mojo.outputDir.listFiles()).stream().map(File::getName)
+                                            .collect(Collectors.toList());
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+        assertThat(outputFiles.spliterator().getExactSizeIfKnown()).isEqualTo(8); // same set of files twice
+        assertThat(directoryNames).containsOnly("swagger", "swagger2");
     }
 
     @Test
@@ -138,8 +178,11 @@ public class Swagger2MarkupMojoTest{
 
 
     private static Iterable<String> recursivelyListFileNames(File dir) throws Exception {
-        return FileUtils.listFiles(dir, null, true).stream()
-                .map(File::getName).collect(Collectors.toList());
+        return listFileNames(dir, true);
+    }
+
+    private static Iterable<String> listFileNames(File dir, boolean recursive) {
+        return FileUtils.listFiles(dir, null, recursive).stream().map(File::getName).collect(Collectors.toList());
     }
 
     private static void verifyFileContains(File file, String value) throws IOException {
