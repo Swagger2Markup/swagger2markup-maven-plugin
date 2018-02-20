@@ -116,7 +116,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
              * If the folder the current Swagger file resides in contains at least one other Swagger file then the
              * output dir must have an extra subdir per file to avoid markdown files getting overwritten.
              */
-            outputDirAddendum += "/" + extracSwaggerFileNameWithoutExtension(converter);
+            outputDirAddendum += File.separator + extracSwaggerFileNameWithoutExtension(converter);
         }
         return new File(outputDir, outputDirAddendum);
     }
@@ -131,7 +131,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
          * - outputDir is set to /tmp/asciidoc
          * -> markdown files from bar.yaml are generated to /tmp/asciidoc/bar-service/v1
          */
-        String swaggerFilePath = converter.getContext().getSwaggerLocation().getPath(); // /Users/foo/bar-service/v1/bar.yaml
+        String swaggerFilePath = new File(converter.getContext().getSwaggerLocation()).getAbsolutePath(); // /Users/foo/bar-service/v1/bar.yaml
         String swaggerFileFolder = StringUtils.substringBeforeLast(swaggerFilePath, File.separator); // /Users/foo/bar-service/v1
         return StringUtils.remove(swaggerFileFolder, swaggerInput); // /bar-service/v1
     }
