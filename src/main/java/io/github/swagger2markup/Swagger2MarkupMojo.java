@@ -15,8 +15,13 @@
  */
 package io.github.swagger2markup;
 
-import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
-import io.github.swagger2markup.utils.URIUtils;
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -26,10 +31,8 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
-import java.io.File;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import io.github.swagger2markup.builder.Swagger2MarkupConfigBuilder;
+import io.github.swagger2markup.utils.URIUtils;
 
 /**
  * Basic mojo to invoke the {@link Swagger2MarkupConverter}
@@ -97,11 +100,34 @@ public class Swagger2MarkupMojo extends AbstractMojo {
 
     private void swaggerToMarkup(Swagger2MarkupConverter converter, boolean inputIsLocalFolder) {
         if (outputFile != null) {
-            converter.toFile(outputFile.toPath());
+            Path useFile = outputFile.toPath();
+            /*
+             * If user has specified input folder with multiple files to convert,
+             * and has specified a single output file, then route all conversions
+             * into one file under each 'new' sub-directory, which corresponds to
+             * each input file.
+             * Otherwise, specifying the output file with an input DIRECTORY means
+             * last file converted wins.
+             */
+            if (inputIsLocalFolder) {
+                if ( outputDir != null ) {
+                   File effectiveOutputDir = outputDir;
+                   effectiveOutputDir = getEffectiveOutputDirWhenInputIsAFolder(converter);
+                   converter.getContext().setOutputPath(effectiveOutputDir.toPath());
+                   useFile =  Paths.get(effectiveOutputDir.getPath(), useFile.getFileName().toString());
+                }
+            }
+            if ( getLog().isInfoEnabled() ) {
+               getLog().info("Converting input to one file: " + useFile);
+            }
+            converter.toFile(useFile);
         } else if (outputDir != null) {
             File effectiveOutputDir = outputDir;
             if (inputIsLocalFolder) {
                 effectiveOutputDir = getEffectiveOutputDirWhenInputIsAFolder(converter);
+            }
+            if (getLog().isInfoEnabled()) {
+               getLog().info("Converting input to multiple files in folder: '" + effectiveOutputDir + "'");
             }
             converter.toFolder(effectiveOutputDir.toPath());
         } else {
