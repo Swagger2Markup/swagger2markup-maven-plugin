@@ -117,6 +117,26 @@ public class Swagger2MarkupMojoTest {
     }
 
     @Test
+    public void shouldConvertIntoSubDirectoryOneFileIfMultipleSwaggerFilesInSameInput() throws Exception {
+        //given that the input folder contains two Swagger files
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        mojo.swaggerInput = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
+        mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
+        mojo.outputFile = new File(SWAGGER_OUTPUT_FILE);
+        
+        //when
+        mojo.execute();
+
+        //then
+        Iterable<String> outputFiles = recursivelyListFileNames(mojo.outputDir);
+        List<String> directoryNames = Arrays.asList(mojo.outputDir.listFiles()).stream().map(File::getName)
+                                            .collect(Collectors.toList());
+        assertThat(outputFiles).containsOnly("swagger.adoc");
+        assertThat(outputFiles.spliterator().getExactSizeIfKnown()).isEqualTo(2); // same set of files twice
+        assertThat(directoryNames).containsOnly("swagger", "swagger2");
+    }
+
+    @Test
     public void shouldConvertIntoMarkdown() throws Exception {
         //given
         Map<String, String> config = new HashMap<>();
