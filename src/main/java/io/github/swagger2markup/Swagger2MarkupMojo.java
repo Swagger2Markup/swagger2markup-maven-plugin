@@ -142,7 +142,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
              * If the folder the current Swagger file resides in contains at least one other Swagger file then the
              * output dir must have an extra subdir per file to avoid markdown files getting overwritten.
              */
-            outputDirAddendum += File.separator + extracSwaggerFileNameWithoutExtension(converter);
+            outputDirAddendum += File.separator + extractSwaggerFileNameWithoutExtension(converter);
         }
         return new File(outputDir, outputDirAddendum);
     }
@@ -159,7 +159,7 @@ public class Swagger2MarkupMojo extends AbstractMojo {
          */
         String swaggerFilePath = new File(converter.getContext().getSwaggerLocation()).getAbsolutePath(); // /Users/foo/bar-service/v1/bar.yaml
         String swaggerFileFolder = StringUtils.substringBeforeLast(swaggerFilePath, File.separator); // /Users/foo/bar-service/v1
-        return StringUtils.remove(swaggerFileFolder, swaggerInput); // /bar-service/v1
+        return StringUtils.remove(swaggerFileFolder, getSwaggerInputAbsolutePath()); // /bar-service/v1
     }
 
     private boolean multipleSwaggerFilesInSwaggerLocationFolder(Swagger2MarkupConverter converter) {
@@ -168,11 +168,20 @@ public class Swagger2MarkupMojo extends AbstractMojo {
         return swaggerFiles != null && swaggerFiles.size() > 1;
     }
 
-    private String extracSwaggerFileNameWithoutExtension(Swagger2MarkupConverter converter) {
+    private String extractSwaggerFileNameWithoutExtension(Swagger2MarkupConverter converter) {
         return FilenameUtils.removeExtension(new File(converter.getContext().getSwaggerLocation()).getName());
     }
 
     private Collection<File> getSwaggerFiles(File directory, boolean recursive) {
         return FileUtils.listFiles(directory, new String[]{"yaml", "yml", "json"}, recursive);
+    }
+
+    /*
+     * The 'swaggerInput' provided by the user can be anything; it's just a string. Hence, it could by Unix-style,
+     * Windows-style or even a mix thereof. This methods turns the input into a File and returns its absolute path. It
+     * will be platform dependent as far as file separators go but at least the separators will be consistent.
+     */
+    private String getSwaggerInputAbsolutePath(){
+        return new File(swaggerInput).getAbsolutePath();
     }
 }
