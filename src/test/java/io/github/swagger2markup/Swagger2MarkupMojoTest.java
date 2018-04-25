@@ -98,6 +98,25 @@ public class Swagger2MarkupMojoTest {
     }
 
     @Test
+    public void shouldConvertIntoDirectoryIfInputIsDirectoryWithMixedSeparators() throws Exception {
+        //given that the input folder contains a nested structure with Swagger files but path to it contains mixed file
+        //separators on Windows (/ and \)
+        Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
+        String swaggerInputPath = new File(RESOURCES_DIR).getAbsoluteFile().getAbsolutePath();
+        mojo.swaggerInput = replaceLast(swaggerInputPath, "\\", "/");
+        mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
+
+        //when
+        mojo.execute();
+
+        //then
+        Iterable<String> outputFiles = recursivelyListFileNames(new File(mojo.outputDir, SWAGGER_DIR));
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+        outputFiles = listFileNames(new File(mojo.outputDir, SWAGGER_DIR + "2"), false);
+        assertThat(outputFiles).containsOnly("definitions.adoc", "overview.adoc", "paths.adoc", "security.adoc");
+    }
+
+    @Test
     public void shouldConvertIntoSubDirectoryIfMultipleSwaggerFilesInSameInput() throws Exception {
         //given that the input folder contains two Swagger files
         Swagger2MarkupMojo mojo = new Swagger2MarkupMojo();
@@ -123,7 +142,7 @@ public class Swagger2MarkupMojoTest {
         mojo.swaggerInput = new File(INPUT_DIR).getAbsoluteFile().getAbsolutePath();
         mojo.outputDir = new File(OUTPUT_DIR).getAbsoluteFile();
         mojo.outputFile = new File(SWAGGER_OUTPUT_FILE);
-        
+
         //when
         mojo.execute();
 
@@ -207,5 +226,16 @@ public class Swagger2MarkupMojoTest {
 
     private static void verifyFileContains(File file, String value) throws IOException {
         assertThat(IOUtils.toString(file.toURI(), StandardCharsets.UTF_8)).contains(value);
+    }
+
+    private static String replaceLast(String input, String search, String replace) {
+        int lastIndex = input.lastIndexOf(search);
+        if (lastIndex > -1) {
+            return input.substring(0, lastIndex)
+                    + replace
+                    + input.substring(lastIndex + search.length(), input.length());
+        } else {
+            return input;
+        }
     }
 }

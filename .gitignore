@@ -4,6 +4,7 @@
 *.iws
 .idea/
 .gradle/
+out/
 
 ## Eclipse ignores
 /.settings
