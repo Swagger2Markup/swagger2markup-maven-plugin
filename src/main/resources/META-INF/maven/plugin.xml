@@ -7,7 +7,7 @@
   <description>Swagger2Markup Maven Plugin</description>
   <groupId>io.github.swagger2markup</groupId>
   <artifactId>swagger2markup-maven-plugin</artifactId>
-  <version>1.3.7</version>
+  <version>1.3.8-SNAPSHOT</version>
   <goalPrefix>swagger2markup</goalPrefix>
   <isolatedRealm>false</isolatedRealm>
   <inheritedByDefault>true</inheritedByDefault>
