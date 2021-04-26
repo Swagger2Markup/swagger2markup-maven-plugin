@@ -56,7 +56,7 @@
 
     <properties>
         <assertj.version>2.1.0</assertj.version>
-        <commons.io.version>2.4</commons.io.version>
+        <commons.io.version>2.7</commons.io.version>
         <coveralls.maven.plugin.version>3.1.0</coveralls.maven.plugin.version>
         <jacoco.maven.plugin.version>0.7.2.201409121644</jacoco.maven.plugin.version>
         <junit.version>4.12</junit.version>
